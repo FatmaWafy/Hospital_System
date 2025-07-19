@@ -287,14 +287,14 @@ const Doctors = () => {
                 <div className='stat-label'>Total Doctors</div>
                 <div className='stat-value'>50</div>
               </div>
-              <img src='/public/3.svg' alt='Doctor Bag' className='stat-icon' />
+              <img src='/3.svg' alt='Doctor Bag' className='stat-icon' />
             </div>
             <div className='doctors-stat-card'>
               <div className='stat-content'>
                 <div className='stat-label'>Online Doctors</div>
                 <div className='stat-value'>30</div>
               </div>
-              <img src='/public/4.svg' alt='Doctor' className='stat-icon' />
+              <img src='/4.svg' alt='Doctor' className='stat-icon' />
             </div>
           </div>
           <div className='response-time-card'>
