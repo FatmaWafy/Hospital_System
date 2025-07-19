@@ -1,0 +1,212 @@
+.overview-page {
+  background-color: #F5F9FB;
+  padding: 32px;
+  width: 100%;
+  color: #0D425D;
+  max-width: 1440px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+.overview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.overview-header h1 {
+  font-weight: 700;
+  font-size: 48px;
+}
+
+.notification-icon {
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+}
+
+.overview-welcome {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.welcome-text h2 {
+  font-size: 24px;
+}
+
+.welcome-text p {
+  color: #7C8493;
+  padding: 8px 12px;
+  border-radius: 4px;
+  margin-top: 8px;
+}
+
+.date-range-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 180px;
+  height: 50px;
+  border-radius: 10px;
+  border: 1px solid #0D425D;
+  background-color: white;
+  padding: 12px 16px;
+  cursor: pointer;
+  gap: 8px;
+  font-weight: 500;
+  color: #0D425D;
+}
+
+.calendar-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.overview-section-three {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.left-boxes {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  flex: 1;
+}
+
+.stats-box {
+  height: 158px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: white;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative; /* IMPORTANT for icon positioning */
+  box-shadow: -8px 12px 18px 0px #DADEE8;
+}
+.stats-icon {
+  position: absolute;
+  bottom: 1px;
+  right: 12px;
+  width: 120px;    /* adjust size as needed */
+  height: 90px;
+  opacity: 1;   /* subtle watermark feel */
+  pointer-events: none; /* so it doesn’t interfere with clicks */
+}
+
+.box-label {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.box-value {
+  font-size: 50px;
+  font-weight: bold;
+  margin-top: 8px;
+}
+
+.patient-status-box {
+  width: 550px;
+  height: 360px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 20px 26px;
+  background-color: white;
+  flex-shrink: 0;
+  box-shadow: -8px 12px 18px 0px #DADEE8;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.chart-center {
+  display: flex;
+  justify-content: center;
+  margin: 12px 0;
+}
+
+.chart-description-row {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.desc-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.color-square {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+}
+
+.view-all-wrapper {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.view-all-btn {
+  border: none;
+  background: none;
+  color: #0D425D;
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.view-all-btn img {
+  width: 16px;
+  height: 16px;
+}
+
+.overview-section-four {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.small-box {
+  flex: 0 0 250px;
+  height: 360px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 20px 26px;
+  background-color: white;
+  box-shadow: -8px 12px 18px 0px #DADEE8;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.bar-box {
+  flex: 1;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 25px 18px;
+  background-color: white;
+  box-shadow: -8px 12px 18px 0px #DADEE8;
+  height: 350px;
+}
+
+.overview-section-five {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: white;
+  padding: 25px 18px;
+  box-shadow: -8px 12px 18px 0px #DADEE8;
+}

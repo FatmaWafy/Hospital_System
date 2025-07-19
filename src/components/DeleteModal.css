@@ -1,0 +1,129 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  padding: 15px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: #828282;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 4px;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.modal-close-btn:hover {
+  color: #333333;
+  background-color: #f5f5f5;
+}
+
+.modal-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.modal-header svg {
+  background-color: #0d425d;
+  color: #f5f5f5; /* Red for warning icon */
+  border-radius: 50%;
+  padding: 8px;
+  width: 30px;
+  height: 30px;
+  margin-top: -40px;
+}
+
+.modal-title {
+  color: #0d425d !important;
+   margin-top: 10px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #282828;
+  margin-bottom: 0px;
+}
+
+.modal-body {
+  margin-bottom: 30px;
+}
+
+.modal-message {
+  color: #0d425d !important;
+   margin-top: -10px  !important;
+  font-size: 1rem;
+  margin-bottom: -10px  !important;
+  line-height: 1.5;
+}
+
+.modal-footer {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  justify-content: center;
+}
+
+.btn-secondary {
+    flex: 1;
+    max-width: 100px;
+    padding: 5px 10px !important;
+    font-size: 1rem;
+    border: 2px solid #0d425d;
+    background: #0d425d;
+    color: #f8fafc;
+    border-radius: 50px !important;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    /* width: 150px; */
+    height: 30px;
+}
+
+.btn-secondary:hover {
+  background-color: #0d425de2;
+}
+
+.btn-danger {
+    flex: 1;
+    max-width: 110px;
+    padding: 5px 10px !important;
+    font-size: 1rem;
+    border: 2px solid #0d425d;
+    background: #f8fafc;
+    color: #0d425d;
+    border-radius: 50px !important;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    height: 30px;
+}
+
+.btn-danger:hover {
+  background-color: #dbe3e7;
+  border-color: #0d425d;
+}
