@@ -87,6 +87,8 @@
   font-weight: 500;
   font-size: 0.8rem;
   text-transform: capitalize;
+   width: 40px;
+  text-align: center;
 }
 .status-badge.online {
   background-color: #39b54a;

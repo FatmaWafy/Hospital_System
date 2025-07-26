@@ -14,7 +14,7 @@ const DoctorDetails = () => {
     status: "online",
   });
 
-  const [shiftData, setShiftData] = useState({
+  const [shiftData] = useState({
     currentShift: "Morning",
     nextShift: "Evening",
     shiftStart: "08:00",
@@ -26,6 +26,8 @@ const DoctorDetails = () => {
 
   const [activeTab, setActiveTab] = useState("basic");
   const [isEditing, setIsEditing] = useState(false);
+  const [isSpecialtyOpen, setIsSpecialtyOpen] = useState(false);
+  const [isLevelOpen, setIsLevelOpen] = useState(false);
 
   const specialties = [
     "Triage Doctor",
@@ -35,8 +37,8 @@ const DoctorDetails = () => {
     "Neurology",
   ];
   const levels = ["Junior", "Mid-Level", "Senior", "Specialist", "Consultant"];
-  const shifts = ["Morning", "Evening", "Night", "Weekend"];
-  const availabilityOptions = ["Available", "Busy", "On Break", "Off Duty"];
+  // const shifts = ["Morning", "Evening", "Night", "Weekend"];
+  // const availabilityOptions = ["Available", "Busy", "On Break", "Off Duty"];
 
   const handleSave = () => {
     console.log("Saving doctor data:", doctorData);
@@ -55,9 +57,9 @@ const DoctorDetails = () => {
     setDoctorData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleShiftChange = (field, value) => {
-    setShiftData((prev) => ({ ...prev, [field]: value }));
-  };
+  // const handleShiftChange = (field, value) => {
+  //   setShiftData((prev) => ({ ...prev, [field]: value }));
+  // };
 
   return (
     <div className='doctor-details-page'>
@@ -119,14 +121,31 @@ const DoctorDetails = () => {
                     </div>
                     <div className='info-item'>
                       <label className='input-label'>Speciality:</label>
-                      <div className='dropdown-display'>
+                      <input
+                        type='text'
+                        value={doctorData.specialty}
+                        readOnly={!isEditing}
+                        className={`input-field dropdown-input ${
+                          !isEditing ? "readonly" : ""
+                        }`}
+                        onClick={() =>
+                          isEditing && setIsSpecialtyOpen(!isSpecialtyOpen)
+                        }
+                      />
+                      <div
+                        className={`dropdown-display ${
+                          isSpecialtyOpen ? "open" : ""
+                        }`}
+                      >
                         {specialties.map((specialty) => (
                           <div
                             key={specialty}
-                            onClick={() =>
-                              isEditing &&
-                              handleInputChange("specialty", specialty)
-                            }
+                            onClick={() => {
+                              if (isEditing) {
+                                handleInputChange("specialty", specialty);
+                                setIsSpecialtyOpen(false);
+                              }
+                            }}
                             className={`dropdown-option ${
                               doctorData.specialty === specialty
                                 ? "selected"
@@ -140,13 +159,31 @@ const DoctorDetails = () => {
                     </div>
                     <div className='info-item'>
                       <label className='input-label'>Level:</label>
-                      <div className='dropdown-display'>
+                      <input
+                        type='text'
+                        value={doctorData.level}
+                        readOnly={!isEditing}
+                        className={`input-field dropdown-input ${
+                          !isEditing ? "readonly" : ""
+                        }`}
+                        onClick={() =>
+                          isEditing && setIsLevelOpen(!isLevelOpen)
+                        }
+                      />
+                      <div
+                        className={`dropdown-display ${
+                          isLevelOpen ? "open" : ""
+                        }`}
+                      >
                         {levels.map((level) => (
                           <div
                             key={level}
-                            onClick={() =>
-                              isEditing && handleInputChange("level", level)
-                            }
+                            onClick={() => {
+                              if (isEditing) {
+                                handleInputChange("level", level);
+                                setIsLevelOpen(false);
+                              }
+                            }}
                             className={`dropdown-option ${
                               doctorData.level === level ? "selected" : ""
                             } ${!isEditing ? "disabled" : ""}`}

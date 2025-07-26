@@ -36,23 +36,23 @@ const Doctors = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [doctorToDelete, setDoctorToDelete] = useState(null);
 
-  const overviewData = [
-    { label: "Total Doctors", value: 50, icon: "/3.svg" },
-    { label: "Online Doctors", value: 30, icon: "/4.svg" },
-  ];
+  // const overviewData = [
+  //   { label: "Total Doctors", value: 50, icon: "/3.svg" },
+  //   { label: "Online Doctors", value: 30, icon: "/4.svg" },
+  // ];
 
-  const averageResponseData = [
-    { name: "Early Response", value: 80, color: "#0D425D" },
-    { name: "Late Response", value: 20, color: "#E0E0E0" },
-  ];
+  // const averageResponseData = [
+  //   { name: "Early Response", value: 80, color: "#0D425D" },
+  //   { name: "Late Response", value: 20, color: "#E0E0E0" },
+  // ];
 
-  const specialtiesData = [
-    { name: "Internal Medicine", value: 10 },
-    { name: "Gen", value: 8 },
-    { name: "Cardio", value: 6 },
-    { name: "Neuro", value: 4 },
-    { name: "ENT", value: 2 },
-  ];
+  // const specialtiesData = [
+  //   { name: "Internal Medicine", value: 10 },
+  //   { name: "Gen", value: 8 },
+  //   { name: "Cardio", value: 6 },
+  //   { name: "Neuro", value: 4 },
+  //   { name: "ENT", value: 2 },
+  // ];
 
   const doctorsData = [
     {
@@ -181,7 +181,7 @@ const Doctors = () => {
         data: [4, 5, 3, 4, 1, 0],
         backgroundColor: "#0d425d",
         borderRadius: 10,
-        barThickness: 10, // <-- رفّع البارات
+        barThickness: 10,
         maxBarThickness: 10,
         categoryPercentage: 0.5,
         barPercentage: 1.0,
@@ -236,19 +236,19 @@ const Doctors = () => {
   };
 
   // Mock data for charts
-  const averageResponseTime = {
-    early: 90.2,
-    late: 9.8,
-  };
+  // const averageResponseTime = {
+  //   early: 90.2,
+  //   late: 9.8,
+  // };
 
-  const statsData = {
-    totalCases: 45,
-    arrestCases: 5,
-    totalDoctors: 50,
-    onlineDoctors: 30,
-  };
+  // const statsData = {
+  //   totalCases: 45,
+  //   arrestCases: 5,
+  //   totalDoctors: 50,
+  //   onlineDoctors: 30,
+  // };
 
-  const maxSpecialtyCount = Math.max(...specialtiesData.map((s) => s.count));
+  // const maxSpecialtyCount = Math.max(...specialtiesData.map((s) => s.count));
 
   return (
     <div className='doctors-page'>

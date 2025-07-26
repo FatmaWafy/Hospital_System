@@ -5,9 +5,12 @@ import {
   Pie,
   Cell,
 } from "recharts";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { LuEye, LuTrash2 } from "react-icons/lu";
+import DeleteModal from "../components/DeleteModal";
 
 const Patients = () => {
+  const navigate = useNavigate(); // إضافة useNavigate
   // Dummy data simulating DB response
   const statsData = {
     totalCases: 45,
@@ -46,12 +49,31 @@ const Patients = () => {
     currentPage * itemsPerPage
   );
 
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [patientToDelete, setPatientToDelete] = useState(null);
+
   const handlePrev = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
 
   const handleNext = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
+
+  const handleViewDetails = (id) => {
+    navigate(`/patients/${id}`); // استخدام navigate بدل كان هناك خطأ
+  };
+
+  const handleDeleteClick = (patient) => {
+    setPatientToDelete(patient);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDelete = () => {
+    console.log("Deleting patient:", patientToDelete.name);
+    setIsDeleteModalOpen(false);
+    setPatientToDelete(null);
+    alert(`${patientToDelete.name} has been deleted.`);
   };
 
   return (
@@ -146,29 +168,31 @@ const Patients = () => {
             {pageData.map((row) => (
               <tr key={row.no}>
                 <td>{row.no}</td>
-                <td>
-  <Link
-  to={`/patients/${row.no}?status=${row.status}`}
-  className="patient-link"
->
-  {row.name}
-</Link>
-
-</td>
-
+                <td>{row.name}</td>
                 <td>{row.doctor}</td>
                 <td>{row.date}</td>
                 <td>{row.time}</td>
                 <td>{row.complaint}</td>
                 <td>
-  <div className={`status-pill ${row.status}`}>
-    {row.status.charAt(0).toUpperCase() + row.status.slice(1)}
-  </div>
-</td>
-
+                  <span
+                    className={`patient-status-pill ${row.status}`}
+                  >
+                    {row.status.charAt(0).toUpperCase() + row.status.slice(1)}
+                  </span>
+                </td>
                 <td className="actions-cell">
-                  <img src="/eye.svg" alt="View" className="action-icon" />
-                  <img src="/recycle.svg" alt="Recycle" className="action-icon" />
+                  <button
+                    className="action-btn view-btn"
+                    onClick={() => handleViewDetails(row.no)}
+                  >
+                    <LuEye size={18} />
+                  </button>
+                  <button
+                    className="action-btn delete-btn"
+                    onClick={() => handleDeleteClick(row)}
+                  >
+                    <LuTrash2 size={18} />
+                  </button>
                 </td>
               </tr>
             ))}
@@ -178,31 +202,37 @@ const Patients = () => {
 
       {/* SECTION 4 - Pagination */}
       <div className="pagination-wrapper">
-  <button
-    className="pagination-arrow left-arrow"
-    onClick={handlePrev}
-    disabled={currentPage === 1}
-  ></button>
+        <button
+          className="pagination-arrow left-arrow"
+          onClick={handlePrev}
+          disabled={currentPage === 1}
+        ></button>
 
-  {Array.from({ length: totalPages }).map((_, i) => (
-    <button
-      key={i}
-      className={`pagination-page ${
-        currentPage === i + 1 ? "active" : ""
-      }`}
-      onClick={() => setCurrentPage(i + 1)}
-    >
-      {i + 1}
-    </button>
-  ))}
+        {Array.from({ length: totalPages }).map((_, i) => (
+          <button
+            key={i}
+            className={`pagination-page ${
+              currentPage === i + 1 ? "active" : ""
+            }`}
+            onClick={() => setCurrentPage(i + 1)}
+          >
+            {i + 1}
+          </button>
+        ))}
 
-  <button
-    className="pagination-arrow right-arrow"
-    onClick={handleNext}
-    disabled={currentPage === totalPages}
-  ></button>
-</div>
+        <button
+          className="pagination-arrow right-arrow"
+          onClick={handleNext}
+          disabled={currentPage === totalPages}
+        ></button>
+      </div>
 
+      <DeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={confirmDelete}
+        itemType="Patient"
+      />
     </div>
   );
 };

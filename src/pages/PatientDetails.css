@@ -1,7 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap');
 
 .patient-details-page {
-  background: #F5F9FB;
+  min-height: 100vh;
+  background-color: #f8f9fa;
   padding: 32px;
   font-family: 'Poppins', sans-serif;
   color: #0D425D;
@@ -9,44 +10,98 @@
   margin: 0 auto;
 }
 
-.page-header {
-  font-size: 32px;
-  font-weight: 700;
-  margin-bottom: 24px;
+.doctor-details-content {
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.tabs {
+/* Header */
+.doctor-details-header {
   display: flex;
-  gap: 16px;
-  margin-bottom: 24px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+}
+
+.doctor-details-title {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #0d425d;
+  margin: 0;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  color: #828282;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.back-btn:hover {
+  color: #0d425d;
+}
+
+/* Main Card */
+.doctor-details-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e0e0e0;
+  overflow: hidden;
+}
+
+/* Tabs */
+.tabs-container {
+  display: flex;
+  gap: 15px;
+  margin: 15px 0 15px 10px;
 }
 
 .tab-btn {
+  background: none;
   border: none;
-  background: #DBE3E7;
-  padding: 10px 20px;
-  border-radius: 10px;
-  font-size: 16px;
-  font-weight: 600;
-  color: #0D425D;
+  padding: 16px 24px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #828282;
   cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  text-align: center;
+}
+
+.tab-btn:hover {
+  color: #0d425d;
 }
 
 .tab-btn.active {
-  background: #0D425D;
-  color: #ffffff;
+  color: #0d425d;
+  border-bottom: 3px solid #0d425d;
+  font-weight: 600;
+}
+
+/* Tab Content */
+.tab-content {
+  padding: 24px;
+}
+
+/* Info Sections */
+.info-section {
+  margin-bottom: 32px;
 }
 
 .section-title {
-  margin-top: 24px;
-  margin-bottom: 16px;
-  font-size: 23px;
-  font-weight: 500;
-  color: #0D425D;
-  border-bottom: 1px solid #0D425D;
-  padding-bottom: 4px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #0d425d;
+  margin-bottom: 24px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e0e0e0;
 }
 
+/* Grid Layouts */
 .personal-info-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -54,49 +109,97 @@
   margin-bottom: 24px;
 }
 
+/* Info Items */
 .info-item {
   display: flex;
   flex-direction: column;
+  gap: 8px;
+  position: relative;
 }
 
-.info-item label {
-  font-size: 14px;
+.input-label {
+  font-size: 0.875rem;
   font-weight: 500;
-  margin-bottom: 6px;
+  color: #0d425d;
 }
 
-.info-item input {
-  width: 280px;
-  height: 44.65px;
-  padding: 0 14px;
-  border-radius: 12px;
-  background: #DBE3E7;
-  border: none;
-  font-size: 16px;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 700;
-  line-height: 19.6px;
-  color: #0D425D;
+/* Input Fields */
+.input-field {
+  padding: 12px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  background-color: #fff;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.gender-buttons {
-  display: flex;
-  gap: 10px;
+.input-field:focus {
+  outline: none;
+  border-color: #0d425d;
+  box-shadow: 0 0 0 3px rgba(13, 66, 93, 0.1);
 }
 
-.gender-btn {
-  background: #DBE3E7;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 12px;
-  font-size: 14px;
-  color: #0D425D;
+.input-field.readonly {
+  background-color: #f8f9fa;
+  border-color: #e0e0e0;
+  cursor: not-allowed;
+}
+
+.dropdown-input {
   cursor: pointer;
+  position: relative;
 }
 
-.gender-btn.active {
-  background: #0D425D;
-  color: #ffffff;
+.dropdown-input:focus + .dropdown-display {
+  display: block;
+}
+
+.dropdown-display {
+  display: none;
+  position: absolute;
+  z-index: 10;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  top: 75px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 200px;
+  max-height: 200px;
+  overflow-y: auto;
+  box-sizing: border-box;
+  left: 0;
+}
+
+.dropdown-display.open {
+  display: block;
+}
+
+.dropdown-option {
+  padding: 12px 16px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #0d425d;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdown-option:hover:not(.disabled) {
+  background-color: #e0e0e0;
+}
+
+.dropdown-option.selected {
+  background-color: #0d425d;
+  color: white;
+}
+
+.dropdown-option.disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .vital-data-row {
@@ -142,6 +245,8 @@
   background: #cccccc;
   text-transform: capitalize;
   transition: transform 0.2s;
+  position: relative;
+  pointer-events: auto;
 }
 
 .status-pill:hover {
@@ -152,6 +257,8 @@
 .status-pill.active {
   box-shadow: 0px 4px 4px #000000;
   border: 2px solid #ffffff;
+  transform: scale(1.1); /* بيظهر أكبر زي الطلب */
+  opacity: 1;
 }
 
 .status-pill.critical {
@@ -170,31 +277,111 @@
   background: #008000;
 }
 
-.action-buttons {
-  margin-top: 24px;
+.underline {
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #ffffff;
+}
+
+/* تعطيل الـ hover وتقليل الـ opacity لما مش في وضع التعديل */
+.status-pill:not(.editable) {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.status-pill:not(.editable):hover {
+  transform: none;
+}
+
+/* تفعيل الألوان الفاقعة والـ hover بس في وضع التعديل */
+.status-pill.editable {
+  pointer-events: auto;
+  opacity: 1;
+}
+
+/* الحفاظ على لون الـ active حتى لو مش في وضع التعديل */
+.status-pill.active:not(.editable) {
+  opacity: 1; /* الحفاظ على الـ opacity المنخفض */
+  /* background: inherit; يحتفظ بلون الأصلي (critical, urgent, إلخ) */
+}
+
+.action-buttons-group {
   display: flex;
+  flex-direction: column;
   justify-content: flex-end;
+  align-items: end;
+  gap: 16px;
+  padding-top: 24px;
+  border-top: 1px solid #e0e0e0;
+  margin-top: 32px;
+}
+.save-edit-buttons {
+  display: flex;
   gap: 16px;
 }
 
-.save-btn,
-.edit-btn {
-  background: #0D425D;
-  color: #ffffff;
+.btn-save {
+  background-color: #0d425d;
+  color: white;
   border: none;
-  padding: 12px 24px;
+  padding: 12px 32px;
   border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 0.875rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: all 0.2s ease;
+  width: fit-content;
 }
 
-.save-btn:hover,
-.edit-btn:hover {
-  background: #082c3c;
+.btn-save:hover:not(:disabled) {
+  background-color: #0a3549;
 }
 
+.btn-save:disabled {
+  background-color: #828282;
+  cursor: not-allowed;
+}
+
+.btn-edit {
+  background: none;
+  color: #0d425d;
+  border: 1px solid #0d425d;
+  padding: 12px 15px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-edit:hover {
+  background-color: #0d425d;
+  color: white;
+}
+
+.delete-button {
+}
+
+.btn-delete {
+  background: none;
+  color: #dc3545;
+  border: 1px solid #dc3545;
+  padding: 12px 15px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 230px;
+}
+
+.btn-delete:hover {
+  background-color: #dc3545;
+  color: white;
+}
 
 .timeline-container {
   position: relative;
@@ -210,7 +397,7 @@
   bottom: 0;
   left: 50%;
   width: 4px;
-  background: #0D425D;
+  background: #0d425d;
   transform: translateX(-50%);
   z-index: 0;
 }
@@ -220,7 +407,7 @@
   left: 50%;
   width: 20px;
   height: 20px;
-  background: #0D425D;
+  background: #0d425d;
   border-radius: 50%;
   transform: translateX(-50%);
   z-index: 2;
@@ -247,8 +434,8 @@
 
 .timeline-card {
   width: 334px;
-  background: #F5F9FB;
-  box-shadow: 15px 1px 18px 0px #DADEE8;
+  background: #f5f9fb;
+  box-shadow: 15px 1px 18px 0px #dadee8;
   border-radius: 27px;
   padding: 10px 20px;
   z-index: 3;
@@ -270,7 +457,7 @@
   position: absolute;
   top: 50%;
   height: 2px;
-  background: #0D425D;
+  background: #0d425d;
   z-index: 1;
 }
 
@@ -292,7 +479,7 @@
 }
 
 .card-title {
-  color: #0D425D;
+  color: #0d425d;
   font-weight: 700;
   font-size: 19px;
 }
@@ -303,16 +490,48 @@
 }
 
 .card-body p {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-weight: 400;
   font-size: 19px;
-  color: #0D425D;
+  color: #0d425d;
   margin: 4px 0;
 }
 
 .change-link {
-  color: #C80E14;
+  color: #c80e14;
   font-weight: 600;
   cursor: pointer;
   margin-left: 8px;
 }
+
+@media (max-width: 768px) {
+  .patient-details-page {
+    padding: 16px;
+  }
+
+  .doctor-details-title {
+    font-size: 2rem;
+  }
+
+  .personal-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tab-btn {
+    text-align: left;
+    padding: 12px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .tab-btn.active {
+    border-bottom: 1px solid #e0e0e0;
+    border-left: 3px solid #0d425d;
+  }
+
+  .action-buttons-group {
+    flex-direction: column;
+  }
+}
+
+
+
