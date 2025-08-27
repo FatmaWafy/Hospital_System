@@ -95,6 +95,7 @@
   flex-direction: column;
   align-items: center;
   gap: 8px;
+  position: relative;
 }
 
 .personal-info-stack {
@@ -116,7 +117,7 @@
 }
 
 .input-field {
-  padding: 12px 16px;
+  padding: 12px 16px ;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   font-size: 0.875rem;
@@ -134,6 +135,7 @@
   background-color: #f8f9fa;
   border-color: #e0e0e0;
   cursor: not-allowed;
+  color: #0d425d;
 }
 
 .profile-photo {
@@ -141,6 +143,23 @@
   height: 100px;
   border-radius: 50%;
   object-fit: cover;
+  position: relative;
+}
+
+.btn-edit-photo {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  position: absolute;
+  top: 70px;
+  right: 25px;
+  transform: translate(50%, 50%);
+}
+
+.change-photo-icon {
+  width: 30px;
+  height: 30px;
 }
 
 .action-buttons-group {

@@ -4,15 +4,14 @@ import "./Settings.css";
 const Settings = () => {
   const [activeTab, setActiveTab] = useState("profile");
   const [isEditing, setIsEditing] = useState(false);
-
-  // Dummy data ( from backend     )
   const [userData, setUserData] = useState({
     name: "Ahmed Safwat Mohamed",
     jobTitle: "Er Manager",
     email: "i.asafwat@gmail.com",
     phone: "0123456789",
-    photo: "avatar.svg", //     from backend
+    photo: "avatar.svg",
   });
+  const [newPhoto, setNewPhoto] = useState(null);
 
   const handleSave = () => {
     console.log("Saving user data:", userData);
@@ -23,9 +22,19 @@ const Settings = () => {
     setUserData((prev) => ({ ...prev, [field]: value }));
   };
 
+  const handlePhotoChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setNewPhoto(file);
+      // Placeholder for API call to upload photo
+      console.log("Uploading photo:", file.name);
+      // Example: fetch('/api/upload-photo', { method: 'POST', body: file })
+      // Then update userData.photo with the new URL from backend response
+    }
+  };
+
   return (
     <div className='settings-page'>
-      {/* SECTION 1 */}
       <div className='settings-header'>
         <h1>Settings</h1>
         <a href='/notifications'>
@@ -36,8 +45,6 @@ const Settings = () => {
           />
         </a>
       </div>
-
-      {/* SECTION 2 */}
       <div className='settings-welcome'>
         <div className='welcome-text'>
           <h2>Good morning, ER Admin</h2>
@@ -50,8 +57,6 @@ const Settings = () => {
           <img src='/calendar.svg' alt='Calendar' className='calendar-icon' />
         </button>
       </div>
-
-      {/* SECTION 3 */}
       <div className='tabs-container'>
         <button
           className={`tab-btn ${activeTab === "profile" ? "active" : ""}`}
@@ -84,7 +89,6 @@ const Settings = () => {
           Feed backs
         </button>
       </div>
-
       <div className='tab-content'>
         {activeTab === "profile" && (
           <div>
@@ -97,6 +101,29 @@ const Settings = () => {
                   alt='Profile'
                   className='profile-photo'
                 />
+                {isEditing && (
+                  <>
+                    <input
+                      type='file'
+                      accept='image/*'
+                      onChange={handlePhotoChange}
+                      style={{ display: "none" }}
+                      id='photoInput'
+                    />
+                    <button
+                      className='btn-edit-photo'
+                      onClick={() =>
+                        document.getElementById("photoInput").click()
+                      }
+                    >
+                      <img
+                        src='f2.svg'
+                        alt='Change Photo'
+                        className='change-photo-icon'
+                      />
+                    </button>
+                  </>
+                )}
               </div>
               <div className='personal-info-stack'>
                 <div className='info-item'>
@@ -165,28 +192,24 @@ const Settings = () => {
         {activeTab === "specialties" && (
           <div className='tab-content-placeholder'>
             <h3>Specialties</h3>
-            {/*       from backend      */}
             <p> from backend </p>
           </div>
         )}
         {activeTab === "doctors" && (
           <div className='tab-content-placeholder'>
             <h3>Doctors</h3>
-            {/*  from backend  */}
             <p> from backend </p>
           </div>
         )}
         {activeTab === "requests" && (
           <div className='tab-content-placeholder'>
             <h3>Requests & Notifications</h3>
-            {/*  from backend  */}
             <p> from backend </p>
           </div>
         )}
         {activeTab === "feedbacks" && (
           <div className='tab-content-placeholder'>
             <h3>Feed backs</h3>
-            {/*  from backend  */}
             <p> from backend </p>
           </div>
         )}
