@@ -34,7 +34,6 @@
 
 .welcome-text p {
   color: #7c8493;
-
   border-radius: 4px;
   margin: -10px 0 0 0;
 }
@@ -76,27 +75,34 @@
   border: 1px solid #e0e0e0;
 }
 
+.profile-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #0d425d;
+  margin: 0 0 16px 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #0d425d;
+}
+
 .profile-section {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.photo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.personal-info-stack {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  margin-left: -450px;
 }
-
-.section-title {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: #0d425d;
-  margin-bottom: 24px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #e0e0e0;
-}
-
-.personal-info-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
-}
-
 .info-item {
   display: flex;
   flex-direction: column;
@@ -190,8 +196,8 @@
 }
 
 @media (max-width: 768px) {
-  .personal-info-grid {
-    grid-template-columns: 1fr;
+  .personal-info-stack {
+    flex-direction: column;
   }
 
   .action-buttons-group {

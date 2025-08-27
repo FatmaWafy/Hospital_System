@@ -11,7 +11,7 @@ const Settings = () => {
     jobTitle: "Er Manager",
     email: "i.asafwat@gmail.com",
     phone: "0123456789",
-    photo: "/profile-photo.jpg", //     from backend
+    photo: "avatar.svg", //     from backend
   });
 
   const handleSave = () => {
@@ -87,77 +87,77 @@ const Settings = () => {
 
       <div className='tab-content'>
         {activeTab === "profile" && (
-          <div className='profile-section'>
-            {/* <h3 className='section-title'>Personal Info</h3> */}
-            <div className='info-item photo-item'>
-              <label className='input-label'>Profile Photo:</label>
-              <img
-                src={userData.photo}
-                alt='Profile'
-                className='profile-photo'
-              />
-            </div>
-
-            <div className='personal-info-grid'>
-              <div className='info-item'>
-                <label className='input-label'>Name:</label>
-                <input
-                  type='text'
-                  value={userData.name}
-                  onChange={(e) => handleInputChange("name", e.target.value)}
-                  readOnly={!isEditing}
-                  className={`input-field ${!isEditing ? "readonly" : ""}`}
+          <div>
+            <p className='profile-title'>Personal Info</p>
+            <div className='profile-section'>
+              <div className='photo-container'>
+                <label className='input-label'>Profile Photo:</label>
+                <img
+                  src={userData.photo}
+                  alt='Profile'
+                  className='profile-photo'
                 />
               </div>
-              <div className='info-item'>
-                <label className='input-label'>Job Title:</label>
-                <input
-                  type='text'
-                  value={userData.jobTitle}
-                  onChange={(e) =>
-                    handleInputChange("jobTitle", e.target.value)
-                  }
-                  readOnly={!isEditing}
-                  className={`input-field ${!isEditing ? "readonly" : ""}`}
-                />
+              <div className='personal-info-stack'>
+                <div className='info-item'>
+                  <label className='input-label'>Name:</label>
+                  <input
+                    type='text'
+                    value={userData.name}
+                    onChange={(e) => handleInputChange("name", e.target.value)}
+                    readOnly={!isEditing}
+                    className={`input-field ${!isEditing ? "readonly" : ""}`}
+                  />
+                </div>
+                <div className='info-item'>
+                  <label className='input-label'>Job Title:</label>
+                  <input
+                    type='text'
+                    value={userData.jobTitle}
+                    onChange={(e) =>
+                      handleInputChange("jobTitle", e.target.value)
+                    }
+                    readOnly={!isEditing}
+                    className={`input-field ${!isEditing ? "readonly" : ""}`}
+                  />
+                </div>
+                <div className='info-item'>
+                  <label className='input-label'>Email:</label>
+                  <input
+                    type='text'
+                    value={userData.email}
+                    onChange={(e) => handleInputChange("email", e.target.value)}
+                    readOnly={!isEditing}
+                    className={`input-field ${!isEditing ? "readonly" : ""}`}
+                  />
+                </div>
+                <div className='info-item'>
+                  <label className='input-label'>Phone no.:</label>
+                  <input
+                    type='text'
+                    value={userData.phone}
+                    onChange={(e) => handleInputChange("phone", e.target.value)}
+                    readOnly={!isEditing}
+                    className={`input-field ${!isEditing ? "readonly" : ""}`}
+                  />
+                </div>
               </div>
-              <div className='info-item'>
-                <label className='input-label'>Email:</label>
-                <input
-                  type='text'
-                  value={userData.email}
-                  onChange={(e) => handleInputChange("email", e.target.value)}
-                  readOnly={!isEditing}
-                  className={`input-field ${!isEditing ? "readonly" : ""}`}
-                />
-              </div>
-              <div className='info-item'>
-                <label className='input-label'>Phone no.:</label>
-                <input
-                  type='text'
-                  value={userData.phone}
-                  onChange={(e) => handleInputChange("phone", e.target.value)}
-                  readOnly={!isEditing}
-                  className={`input-field ${!isEditing ? "readonly" : ""}`}
-                />
-              </div>
-            </div>
-
-            <div className='action-buttons-group'>
-              <div className='save-edit-buttons'>
-                <button
-                  className='btn-save'
-                  onClick={handleSave}
-                  disabled={!isEditing}
-                >
-                  Save
-                </button>
-                <button
-                  className='btn-edit'
-                  onClick={() => setIsEditing(!isEditing)}
-                >
-                  {isEditing ? "Cancel Edit" : "Edit Profile"}
-                </button>
+              <div className='action-buttons-group'>
+                <div className='save-edit-buttons'>
+                  <button
+                    className='btn-save'
+                    onClick={handleSave}
+                    disabled={!isEditing}
+                  >
+                    Save
+                  </button>
+                  <button
+                    className='btn-edit'
+                    onClick={() => setIsEditing(!isEditing)}
+                  >
+                    {isEditing ? "Cancel Edit" : "Edit Profile"}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
