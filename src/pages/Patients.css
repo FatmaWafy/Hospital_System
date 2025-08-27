@@ -1,12 +1,42 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap');
-
 .patients-page {
-  background-color: #F5F9FB;
+  background-color: #f5f9fb;
   padding: 32px;
+  width: 100%;
+  color: #0d425d;
   max-width: 1440px;
   margin: 0 auto;
-  font-family: 'Poppins', sans-serif;
-  color: #0D425D;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+.patients-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.patients-header h1 {
+  font-weight: 700;
+  font-size: 48px;
+  margin: 0;
+}
+
+.patients-welcome {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.welcome-text h2 {
+  font-size: 24px;
+}
+
+.welcome-text p {
+  color: #7c8493;
+
+  border-radius: 4px;
+  margin: -10px 0 0 0;
 }
 
 .patients-section-two {
@@ -21,7 +51,7 @@
   border-radius: 5px;
   background-color: white;
   padding: 20px 26px;
-  box-shadow: -8px 12px 18px 0px #DADEE8;
+  box-shadow: -8px 12px 18px 0px #dadee8;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -65,7 +95,7 @@
 .view-all-btn {
   border: none;
   background: none;
-  color: #0D425D;
+  color: #0d425d;
   font-weight: 600;
   font-size: 14px;
   display: flex;
@@ -93,7 +123,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  box-shadow: -8px 12px 18px 0px #DADEE8;
+  box-shadow: -8px 12px 18px 0px #dadee8;
 }
 
 .stats-iconH {
@@ -121,7 +151,7 @@
   background: white;
   border: 1px solid #ccc;
   border-radius: 5px;
-  box-shadow: -8px 12px 18px 0px #DADEE8;
+  box-shadow: -8px 12px 18px 0px #dadee8;
   padding: 20px;
   margin-bottom: 40px;
 }
@@ -178,7 +208,7 @@
 }
 
 .patient-status-pill.urgent {
-  background-color: #C80E14;
+  background-color: #c80e14;
   color: white;
 }
 
@@ -193,7 +223,7 @@
 }
 
 .patient-status-pill.moderate {
-  background-color: #FFA500;
+  background-color: #ffa500;
   color: white;
 }
 
@@ -260,8 +290,8 @@
   width: 40px;
   height: 40px;
   border-radius: 20px;
-  border: 1px solid #B4C4CD;
-  background: #F5F9FB;
+  border: 1px solid #b4c4cd;
+  background: #f5f9fb;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -274,7 +304,7 @@
   content: "";
   border-top: 6px solid transparent;
   border-bottom: 6px solid transparent;
-  border-right: 8px solid #0D425D;
+  border-right: 8px solid #0d425d;
   display: inline-block;
 }
 
@@ -283,7 +313,7 @@
   content: "";
   border-top: 6px solid transparent;
   border-bottom: 6px solid transparent;
-  border-left: 8px solid #0D425D;
+  border-left: 8px solid #0d425d;
   display: inline-block;
 }
 
@@ -291,14 +321,14 @@
   width: 40px;
   height: 40px;
   border-radius: 20px;
-  border: 1px solid #B4C4CD;
-  background: #F5F9FB;
-  color: #0D425D;
+  border: 1px solid #b4c4cd;
+  background: #f5f9fb;
+  color: #0d425d;
   font-weight: 600;
   cursor: pointer;
 }
 
 .pagination-page.active {
-  background: #B4C4CD;
-  border: 1px solid #0D425D;
+  background: #b4c4cd;
+  border: 1px solid #0d425d;
 }

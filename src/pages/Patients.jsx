@@ -79,31 +79,32 @@ const Patients = () => {
   return (
     <div className="patients-page">
       {/* SECTION 1 */}
-      <div className="overview-header">
-        <h1>Emergency Room Patients</h1>
-        <a href="/notifications">
+      <div className='patients-header'>
+        <h1>Emergency Room Doctors</h1>
+        <a href='/notifications'>
           <img
-            src="/notifications.svg"
-            alt="Notifications"
-            className="notification-icon"
+            src='/notifications.svg'
+            alt='Notifications'
+            className='notification-icon'
           />
         </a>
       </div>
 
-      <div className="overview-welcome">
-        <div className="welcome-text">
+      {/* SECTION 2 */}
+      <div className='patients-welcome'>
+        <div className='welcome-text'>
           <h2>Good morning, ER Admin</h2>
           <p>
             Here is what’s happening with ER Department from May 19 - May 25.
           </p>
         </div>
-        <button className="date-range-btn">
+        <button className='date-range-btn'>
           <span>May 19 - May 25</span>
-          <img src="/calendar.svg" alt="Calendar" className="calendar-icon" />
+          <img src='/calendar.svg' alt='Calendar' className='calendar-icon' />
         </button>
       </div>
 
-      {/* SECTION 2 */}
+      {/* SECTION 3 */}
       <div className="patients-section-two">
         <div className="patients-status-box">
           <h3>Patients Status</h3>
@@ -148,7 +149,7 @@ const Patients = () => {
         </div>
       </div>
 
-      {/* SECTION 3 */}
+      {/* SECTION 4 */}
       <div className="patients-table-section">
         <h3>ER PATIENTS LIST</h3>
         <table className="patients-table">
@@ -200,7 +201,7 @@ const Patients = () => {
         </table>
       </div>
 
-      {/* SECTION 4 - Pagination */}
+      {/* SECTION 5 - Pagination */}
       <div className="pagination-wrapper">
         <button
           className="pagination-arrow left-arrow"

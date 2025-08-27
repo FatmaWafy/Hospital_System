@@ -1,9 +1,42 @@
-/* Layout */
 .doctors-page {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  background-color: #f5f9fb;
+  padding: 32px;
   width: 100%;
+  color: #0d425d;
+  max-width: 1440px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+.doctors-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.doctors-header h1 {
+  font-weight: 700;
+  font-size: 48px;
+  margin: 0;
+}
+
+.doctors-welcome {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.welcome-text h2 {
+  font-size: 24px;
+}
+
+.welcome-text p {
+  color: #7c8493;
+
+  border-radius: 4px;
+  margin: -10px 0 0 0;
 }
 
 /* Third Column: Large Chart Card */
@@ -87,7 +120,7 @@
   font-weight: 500;
   font-size: 0.8rem;
   text-transform: capitalize;
-   width: 40px;
+  width: 40px;
   text-align: center;
 }
 .status-badge.online {
@@ -144,47 +177,13 @@
 .print-btn:hover {
   color: #0d425d;
 }
-.doctors-header {
-  display: flex !important;
-  justify-content: space-between !important;
-  align-items: center !important;
-  margin-bottom: 32px !important;
-  margin-left: 30px;
-}
-.doctors-header h1 {
-  font-weight: 700 !important;
-  font-size: 48px !important;
-  color: #0d425d !important;
-  margin-top: 0 !important;
-}
+
 .notification-icon {
   width: 40px !important;
   height: 40px !important;
   cursor: pointer !important;
 }
-.doctors-welcome {
-  display: flex !important;
-  justify-content: space-between !important;
-  align-items: center !important;
-  margin-bottom: 32px !important;
-  margin-left: 30px;
-}
-.welcome-text {
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-}
-.welcome-text h2 {
-  font-size: 24px !important;
-  color: #0d425d !important;
-  margin-top: 0 !important;
-}
-.welcome-text p {
-  color: #7c8493 !important;
-  padding: 0px !important;
-  border-radius: 0px !important;
-  margin-top: -20px !important;
-}
+
 .date-range-btn {
   display: flex !important;
   align-items: center !important;
@@ -204,15 +203,15 @@
   width: 24px !important;
   height: 24px !important;
 }
- 
- .list-header {
+
+.list-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
   color: #0d425d;
 }
-    
+
 /* Responsive */
 @media (max-width: 1024px) {
   .doctors-doctors-cards {
@@ -411,7 +410,6 @@
   margin-bottom: 5px;
 }
 .chart-heading button {
-
   margin-top: 10px;
 }
 
@@ -482,7 +480,7 @@
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   padding: 20px 10px 40px 5px;
-   display: flex;
+  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;

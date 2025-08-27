@@ -4,8 +4,7 @@ import Overview from './pages/Overview';
 import Doctors from './pages/Doctors';
 import DoctorDetails from "./pages/DoctorDetails"
 import Patients from './pages/Patients';
-import Profile from './pages/Profile';
-import Settings from './pages/Settings';
+ import Settings from './pages/Settings';
 import HelpCenter from './pages/HelpCenter';
 import PatientDetails from './pages/PatientDetails';
 
@@ -14,14 +13,13 @@ function App() {
     <BrowserRouter>
       <div style={{ display: 'flex' }}>
         <Sidebar />
-        <div style={{ padding: '20px', flex: 1 }}>
+        <div style={{   flex: 1 }}>
           <Routes>
             <Route path="/" element={<Overview />} />
             <Route path="/doctors" element={<Doctors />} />
             <Route path="/doctors/:id" element={<DoctorDetails  />} />
             <Route path="/patients" element={<Patients />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/settings" element={<Settings />} />
+             <Route path="/settings" element={<Settings />} />
             <Route path="/help" element={<HelpCenter />} />
             <Route path="/patients/:id" element={<PatientDetails />} />
           </Routes>

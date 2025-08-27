@@ -1,30 +1,24 @@
 .overview-page {
-  background-color: #F5F9FB;
+  background-color: #f5f9fb;
   padding: 32px;
   width: 100%;
-  color: #0D425D;
+  color: #0d425d;
   max-width: 1440px;
   margin: 0 auto;
   box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 .overview-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 32px;
 }
 
 .overview-header h1 {
   font-weight: 700;
   font-size: 48px;
-}
-
-.notification-icon {
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
+  margin: 0;
 }
 
 .overview-welcome {
@@ -39,10 +33,15 @@
 }
 
 .welcome-text p {
-  color: #7C8493;
-  padding: 8px 12px;
+  color: #7c8493;
+
   border-radius: 4px;
-  margin-top: 8px;
+  margin: -10px 0 0 0;
+}
+.notification-icon {
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
 }
 
 .date-range-btn {
@@ -52,13 +51,13 @@
   width: 180px;
   height: 50px;
   border-radius: 10px;
-  border: 1px solid #0D425D;
+  border: 1px solid #0d425d;
   background-color: white;
   padding: 12px 16px;
   cursor: pointer;
   gap: 8px;
   font-weight: 500;
-  color: #0D425D;
+  color: #0d425d;
 }
 
 .calendar-icon {
@@ -89,15 +88,15 @@
   flex-direction: column;
   justify-content: center;
   position: relative; /* IMPORTANT for icon positioning */
-  box-shadow: -8px 12px 18px 0px #DADEE8;
+  box-shadow: -8px 12px 18px 0px #dadee8;
 }
 .stats-icon {
   position: absolute;
   bottom: 1px;
   right: 12px;
-  width: 120px;    /* adjust size as needed */
+  width: 120px; /* adjust size as needed */
   height: 90px;
-  opacity: 1;   /* subtle watermark feel */
+  opacity: 1; /* subtle watermark feel */
   pointer-events: none; /* so it doesn’t interfere with clicks */
 }
 
@@ -120,7 +119,7 @@
   padding: 20px 26px;
   background-color: white;
   flex-shrink: 0;
-  box-shadow: -8px 12px 18px 0px #DADEE8;
+  box-shadow: -8px 12px 18px 0px #dadee8;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -160,7 +159,7 @@
 .view-all-btn {
   border: none;
   background: none;
-  color: #0D425D;
+  color: #0d425d;
   font-weight: 600;
   font-size: 14px;
   display: flex;
@@ -187,7 +186,7 @@
   border-radius: 5px;
   padding: 20px 26px;
   background-color: white;
-  box-shadow: -8px 12px 18px 0px #DADEE8;
+  box-shadow: -8px 12px 18px 0px #dadee8;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -199,7 +198,7 @@
   border-radius: 5px;
   padding: 25px 18px;
   background-color: white;
-  box-shadow: -8px 12px 18px 0px #DADEE8;
+  box-shadow: -8px 12px 18px 0px #dadee8;
   height: 350px;
 }
 
@@ -208,5 +207,5 @@
   border-radius: 5px;
   background-color: white;
   padding: 25px 18px;
-  box-shadow: -8px 12px 18px 0px #DADEE8;
+  box-shadow: -8px 12px 18px 0px #dadee8;
 }
