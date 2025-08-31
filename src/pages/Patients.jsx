@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import "./Patients.css";
-import {
-  PieChart,
-  Pie,
-  Cell,
-} from "recharts";
+import { PieChart, Pie, Cell } from "recharts";
 import { Link, useNavigate } from "react-router-dom";
-import { LuEye, LuTrash2 } from "react-icons/lu";
+import {
+  LuChevronLeft,
+  LuChevronRight,
+  LuEye,
+  LuPrinter,
+  LuSearch,
+  LuTrash2,
+} from "react-icons/lu";
 import DeleteModal from "../components/DeleteModal";
 
 const Patients = () => {
@@ -34,12 +37,12 @@ const Patients = () => {
     status: ["urgent", "critical", "cold", "moderate"][i % 4],
   }));
 
-  const statusIcons = {
-    urgent: "/urgent.svg",
-    critical: "/critical.svg",
-    cold: "/cold.svg",
-    moderate: "/moderate.svg",
-  };
+  // const statusIcons = {
+  //   urgent: "/urgent.svg",
+  //   critical: "/critical.svg",
+  //   cold: "/cold.svg",
+  //   moderate: "/moderate.svg",
+  // };
 
   const itemsPerPage = 15;
   const [currentPage, setCurrentPage] = useState(1);
@@ -51,6 +54,7 @@ const Patients = () => {
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [patientToDelete, setPatientToDelete] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handlePrev = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
@@ -75,9 +79,11 @@ const Patients = () => {
     setPatientToDelete(null);
     alert(`${patientToDelete.name} has been deleted.`);
   };
-
+  const handlePrint = () => {
+    window.print();
+  };
   return (
-    <div className="patients-page">
+    <div className='patients-page'>
       {/* SECTION 1 */}
       <div className='patients-header'>
         <h1>Emergency Room Doctors</h1>
@@ -105,15 +111,15 @@ const Patients = () => {
       </div>
 
       {/* SECTION 3 */}
-      <div className="patients-section-two">
-        <div className="patients-status-box">
+      <div className='patients-section-two'>
+        <div className='patients-status-box'>
           <h3>Patients Status</h3>
-          <div className="chart-center">
+          <div className='chart-center'>
             <PieChart width={280} height={200}>
               <Pie
                 data={patientStatusData}
-                dataKey="value"
-                nameKey="name"
+                dataKey='value'
+                nameKey='name'
                 innerRadius={70}
                 outerRadius={100}
               >
@@ -123,91 +129,108 @@ const Patients = () => {
               </Pie>
             </PieChart>
           </div>
-          <div className="chart-description-row">
+          <div className='chart-description-row'>
             {patientStatusData.map((item) => (
-              <div className="desc-item" key={item.name}>
+              <div className='desc-item' key={item.name}>
                 <div
-                  className="color-square"
+                  className='color-square'
                   style={{ backgroundColor: item.color }}
                 ></div>
                 <span>{`${item.value}% ${item.name}`}</span>
               </div>
             ))}
           </div>
-          <div className="view-all-wrapper">
-            <button className="view-all-btn">
+          <div className='view-all-wrapper'>
+            <button className='view-all-btn'>
               View All Patients
-              <img src="/arrow-right.svg" alt="Arrow Right" />
+              <img src='/arrow-right.svg' alt='Arrow Right' />
             </button>
           </div>
         </div>
 
-        <div className="stats-box patients-total-cases">
-          <span className="box-labelH">Total Cases</span>
-          <span className="box-valueH">{statsData.totalCases}</span>
-          <img src="/1.svg" alt="icon" className="stats-iconH" />
+        <div className='stats-box patients-total-cases'>
+          <span className='box-labelH'>Total Cases</span>
+          <span className='box-valueH'>{statsData.totalCases}</span>
+          <img src='/1.svg' alt='icon' className='stats-iconH' />
         </div>
       </div>
 
       {/* SECTION 4 */}
-      <div className="patients-table-section">
-        <h3>ER PATIENTS LIST</h3>
-        <table className="patients-table">
-          <thead>
-            <tr>
-              <th>No</th>
-              <th>Name</th>
-              <th>Assigned Doctors</th>
-              <th>Date of Admit</th>
-              <th>Time of Admit</th>
-              <th>Complaint</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {pageData.map((row) => (
-              <tr key={row.no}>
-                <td>{row.no}</td>
-                <td>{row.name}</td>
-                <td>{row.doctor}</td>
-                <td>{row.date}</td>
-                <td>{row.time}</td>
-                <td>{row.complaint}</td>
-                <td>
-                  <span
-                    className={`patient-status-pill ${row.status}`}
-                  >
-                    {row.status.charAt(0).toUpperCase() + row.status.slice(1)}
-                  </span>
-                </td>
-                <td className="actions-cell">
-                  <button
-                    className="action-btn view-btn"
-                    onClick={() => handleViewDetails(row.no)}
-                  >
-                    <LuEye size={18} />
-                  </button>
-                  <button
-                    className="action-btn delete-btn"
-                    onClick={() => handleDeleteClick(row)}
-                  >
-                    <LuTrash2 size={18} />
-                  </button>
-                </td>
+      <div className='patients-table-section'>
+        <div className='table-responsive'>
+          <div className='list-header'>
+            <h2 className='section-title'>PATIENTS LIST</h2>
+            <div className='list-actions'>
+              <input
+                type='text'
+                placeholder='Search...'
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className='search-input'
+              />
+              <LuSearch size={15} className="search-icon"/>
+              <button className='print-btn' onClick={handlePrint}>
+                <LuPrinter size={20} />
+              </button>
+            </div>
+          </div>
+          <table className='patients-table printable-table'>
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Name</th>
+                <th>Assigned Doctors</th>
+                <th>Date of Admit</th>
+                <th>Time of Admit</th>
+                <th>Complaint</th>
+                <th>Status</th>
+                <th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {pageData.map((row) => (
+                <tr key={row.no}>
+                  <td>{row.no}</td>
+                  <td>{row.name}</td>
+                  <td>{row.doctor}</td>
+                  <td>{row.date}</td>
+                  <td>{row.time}</td>
+                  <td>{row.complaint}</td>
+                  <td>
+                    <span className={`patient-status-pill ${row.status}`}>
+                      {row.status.charAt(0).toUpperCase() + row.status.slice(1)}
+                    </span>
+                  </td>
+                  <td className='actions-cell'>
+                    <button
+                      className='action-btn view-btn'
+                      onClick={() => handleViewDetails(row.no)}
+                    >
+                      <LuEye size={18} />
+                    </button>
+                    <button
+                      className='action-btn delete-btn'
+                      onClick={() => handleDeleteClick(row)}
+                    >
+                      <LuTrash2 size={18} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* SECTION 5 - Pagination */}
-      <div className="pagination-wrapper">
+      <div className='pagination-wrapper'>
         <button
-          className="pagination-arrow left-arrow"
+          className='pagination-btn'
           onClick={handlePrev}
           disabled={currentPage === 1}
-        ></button>
+        >
+          <LuChevronLeft size={18} />
+        </button>
 
         {Array.from({ length: totalPages }).map((_, i) => (
           <button
@@ -220,19 +243,22 @@ const Patients = () => {
             {i + 1}
           </button>
         ))}
+        <span className='pagination-dots'>...</span>
 
         <button
-          className="pagination-arrow right-arrow"
+          className='pagination-btn'
           onClick={handleNext}
           disabled={currentPage === totalPages}
-        ></button>
+        >
+          <LuChevronRight size={18} />
+        </button>
       </div>
 
       <DeleteModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={confirmDelete}
-        itemType="Patient"
+        itemType='Patient'
       />
     </div>
   );

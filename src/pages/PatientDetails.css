@@ -61,10 +61,10 @@
 
 .tab-btn {
   background: none;
-  border: none;
-  padding: 16px 24px;
-  font-size: 0.875rem;
-  font-weight: 500;
+  border: 3px solid transparent;
+  padding: 16px 20px;
+  font-size: 0.950rem;
+  font-weight: 600;
   color: #828282;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -79,7 +79,6 @@
 .tab-btn.active {
   color: #0d425d;
   border-bottom: 3px solid #0d425d;
-  font-weight: 600;
 }
 
 /* Tab Content */

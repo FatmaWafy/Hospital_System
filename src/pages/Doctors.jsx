@@ -8,6 +8,7 @@ import {
   LuPrinter,
   LuChevronLeft,
   LuChevronRight,
+  LuSearch,
 } from "react-icons/lu";
 import {
   Chart,
@@ -35,117 +36,23 @@ const Doctors = () => {
   const navigate = useNavigate();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [doctorToDelete, setDoctorToDelete] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  // const overviewData = [
-  //   { label: "Total Doctors", value: 50, icon: "/3.svg" },
-  //   { label: "Online Doctors", value: 30, icon: "/4.svg" },
-  // ];
-
-  // const averageResponseData = [
-  //   { name: "Early Response", value: 80, color: "#0D425D" },
-  //   { name: "Late Response", value: 20, color: "#E0E0E0" },
-  // ];
-
-  // const specialtiesData = [
-  //   { name: "Internal Medicine", value: 10 },
-  //   { name: "Gen", value: 8 },
-  //   { name: "Cardio", value: 6 },
-  //   { name: "Neuro", value: 4 },
-  //   { name: "ENT", value: 2 },
-  // ];
-
-  const doctorsData = [
-    {
-      id: 1,
-      name: "Mohamed Ali",
-      specialty: "Triage Doctor",
-      level: "Junior",
-      loginDate: "11/5/2025",
-      loginTime: "12:00 AM",
-      status: "online",
-    },
-    {
-      id: 2,
-      name: "Ahmed Kamal",
-      specialty: "Internal Medicine",
-      level: "Junior",
-      loginDate: "11/5/2025",
-      loginTime: "12:00 AM",
-      status: "online",
-    },
-    {
-      id: 3,
-      name: "Ali Sayed",
-      specialty: "Internal Medicine",
-      level: "Junior",
-      loginDate: "11/5/2025",
-      loginTime: "12:00 AM",
-      status: "offline",
-    },
-    {
-      id: 4,
-      name: "Mohamed Ali",
-      specialty: "Cardiology",
-      level: "Junior",
-      loginDate: "11/5/2025",
-      loginTime: "12:00 AM",
-      status: "online",
-    },
-    {
-      id: 5,
-      name: "Shimaa Mostafa",
-      specialty: "Cardiology",
-      level: "Junior",
-      loginDate: "11/5/2025",
-      loginTime: "12:00 AM",
-      status: "online",
-    },
-    {
-      id: 6,
-      name: "Noraan Ali",
-      specialty: "Neurology",
-      level: "Junior",
-      loginDate: "11/5/2025",
-      loginTime: "12:00 AM",
-      status: "online",
-    },
-    {
-      id: 7,
-      name: "Laila Sami",
-      specialty: "Neurology",
-      level: "Junior",
-      loginDate: "11/5/2025",
-      loginTime: "12:00 AM",
-      status: "offline",
-    },
-    {
-      id: 8,
-      name: "Asmaa Sami",
-      specialty: "Neurology",
-      level: "Junior",
-      loginDate: "11/5/2025",
-      loginTime: "12:00 AM",
-      status: "online",
-    },
-    {
-      id: 9,
-      name: "Shimaa Mostafa",
-      specialty: "General Surgery",
-      level: "Mid-Level",
-      loginDate: "11/5/2025",
-      loginTime: "12:00 AM",
-      status: "offline",
-    },
-    {
-      id: 10,
-      name: "Noraan Ali",
-      specialty: "General Surgery",
-      level: "Junior",
-      loginDate: "11/5/2025",
-      loginTime: "12:00 AM",
-      status: "online",
-    },
-  ];
+  const doctorsData = Array.from({ length: 50 }).map((_, i) => ({
+    id: i + 1,
+    name: `Dr. ${i + 1}`,
+    specialty: [
+      "Triage Doctor",
+      "Internal Medicine",
+      "Cardiology",
+      "Neurology",
+      "General Surgery",
+    ][i % 5],
+    level: i % 2 === 0 ? "Junior" : "Mid-Level",
+    loginDate: "11/5/2025",
+    loginTime: "12:00 AM",
+    status: i % 2 === 0 ? "online" : "offline",
+  }));
 
   const donutData = {
     labels: ["Early Response", "Late Response"],
@@ -212,10 +119,28 @@ const Doctors = () => {
           stepSize: 2,
           color: "#0d425d",
           font: { size: 13, weight: "bold" },
-          max: 12,
         },
       },
     },
+  };
+
+  const itemsPerPage = 10;
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(doctorsData.length / itemsPerPage);
+  const pageData = doctorsData
+    .filter(
+      (doctor) =>
+        doctor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        doctor.specialty.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  const handlePrev = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
+  const handleNext = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
 
   const handleViewDetails = (id) => {
@@ -229,26 +154,14 @@ const Doctors = () => {
 
   const confirmDelete = () => {
     console.log("Deleting doctor:", doctorToDelete.name);
-    // In a real app, send delete request to API
     setIsDeleteModalOpen(false);
     setDoctorToDelete(null);
     alert(`${doctorToDelete.name} has been deleted.`);
   };
 
-  // Mock data for charts
-  // const averageResponseTime = {
-  //   early: 90.2,
-  //   late: 9.8,
-  // };
-
-  // const statsData = {
-  //   totalCases: 45,
-  //   arrestCases: 5,
-  //   totalDoctors: 50,
-  //   onlineDoctors: 30,
-  // };
-
-  // const maxSpecialtyCount = Math.max(...specialtiesData.map((s) => s.count));
+  const handlePrint = () => {
+    window.print();
+  };
 
   return (
     <div className='doctors-page'>
@@ -331,20 +244,25 @@ const Doctors = () => {
         </div>
       </div>
 
-      {/* SECTION 4 */}
-      <div className='doctors-list-section card'>
-        <div className='list-header'>
-          <h2 className='section-title'>ER DOCTORS LIST</h2>
-          <div className='list-actions'>
-            <span className='date-display'>11 May 2025</span>
-            <button className='print-btn'>
-              <LuPrinter size={20} />
-            </button>
-          </div>
-        </div>
-
+      <div className='doctors-table-section'>
         <div className='table-responsive'>
-          <table className='doctors-table'>
+          <div className='list-header'>
+            <h2 className='section-title'>DOCTORS LIST</h2>
+            <div className='list-actions'>
+              <input
+                type='text'
+                placeholder='Search...'
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className='search-input'
+              />
+              <LuSearch size={15} className="search-icon"/>
+              <button className='print-btn' onClick={handlePrint}>
+                <LuPrinter size={20} />
+              </button>
+            </div>
+          </div>
+          <table className='doctors-table printable-table'>
             <thead>
               <tr>
                 <th>No</th>
@@ -358,9 +276,9 @@ const Doctors = () => {
               </tr>
             </thead>
             <tbody>
-              {doctorsData.map((doctor, index) => (
+              {pageData.map((doctor) => (
                 <tr key={doctor.id}>
-                  <td>{index + 1}</td>
+                  <td>{doctor.id}</td>
                   <td>{doctor.name}</td>
                   <td>{doctor.specialty}</td>
                   <td>{doctor.level}</td>
@@ -394,16 +312,31 @@ const Doctors = () => {
             </tbody>
           </table>
         </div>
-
         <div className='pagination'>
-          <button className='pagination-btn'>
+          <button
+            className='pagination-btn'
+            onClick={handlePrev}
+            disabled={currentPage === 1}
+          >
             <LuChevronLeft size={18} />
           </button>
-          <button className='pagination-btn active'>1</button>
-          <button className='pagination-btn'>2</button>
-          <button className='pagination-btn'>3</button>
+          {Array.from({ length: totalPages }).map((_, i) => (
+            <button
+              key={i + 1}
+              className={`pagination-page ${
+                currentPage === i + 1 ? "active" : ""
+              }`}
+              onClick={() => setCurrentPage(i + 1)}
+            >
+              {i + 1}
+            </button>
+          ))}
           <span className='pagination-dots'>...</span>
-          <button className='pagination-btn'>
+          <button
+            className='pagination-btn'
+            onClick={handleNext}
+            disabled={currentPage === totalPages}
+          >
             <LuChevronRight size={18} />
           </button>
         </div>

@@ -80,15 +80,15 @@
 
 .stats-box {
   height: 158px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   background-color: white;
   padding: 16px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   position: relative; /* IMPORTANT for icon positioning */
-  box-shadow: -8px 12px 18px 0px #dadee8;
 }
 .stats-icon {
   position: absolute;
@@ -114,12 +114,12 @@
 .patient-status-box {
   width: 550px;
   height: 360px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   padding: 20px 26px;
   background-color: white;
   flex-shrink: 0;
-  box-shadow: -8px 12px 18px 0px #dadee8;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -182,11 +182,11 @@
 .small-box {
   flex: 0 0 250px;
   height: 360px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   padding: 20px 26px;
   background-color: white;
-  box-shadow: -8px 12px 18px 0px #dadee8;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -194,18 +194,18 @@
 
 .bar-box {
   flex: 1;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   padding: 25px 18px;
   background-color: white;
-  box-shadow: -8px 12px 18px 0px #dadee8;
   height: 350px;
 }
 
 .overview-section-five {
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   background-color: white;
   padding: 25px 18px;
-  box-shadow: -8px 12px 18px 0px #dadee8;
 }
