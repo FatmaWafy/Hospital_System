@@ -17,7 +17,7 @@ const EditSpecialtyModal = ({ isOpen, onClose, specialty, onSave }) => {
 
   return (
     <div className='modal-overlay'>
-      <div className='modal-content' style={{ width: "300px" }}>
+      <div className='modal-content second'>
         <div className='modal-header'>
           <LuFileEdit size={48} className='text-critical-red' />
           <h2 style={{ color: "#0d425d", marginBottom: "0px" }}>

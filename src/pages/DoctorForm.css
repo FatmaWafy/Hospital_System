@@ -1,0 +1,152 @@
+/* .doctor-form-page {
+  background-color: #f5f9fb;
+  padding: 32px;
+  color: #0d425d;
+}
+
+h1 {
+  font-weight: 700;
+  font-size: 48px;
+  margin: 0 0 32px 0;
+}
+
+.personal-info-section {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+h2 {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #0d425d;
+  margin: 0 0 16px 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #0d425d;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 24px;
+}
+
+.photo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.profile-photo {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.change-photo-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.form-column {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #0d425d;
+}
+
+input, select {
+  padding: 12px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  background-color: #f8f9fa;
+}
+
+.status-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.status-online {
+  background: #39b54a;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.status-offline {
+  background: #1f2937;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.active {
+  border: 2px solid #0d425d;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.clear-btn {
+  background: none;
+  color: #0d425d;
+  border: 1px solid #0d425d;
+  padding: 12px 32px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.save-btn {
+  background-color: #0d425d;
+  color: white;
+  border: none;
+  padding: 12px 32px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.edit-btn {
+  background: none;
+  color: #0d425d;
+  border: 1px solid #0d425d;
+  padding: 12px 32px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.delete-btn {
+  background: none;
+  color: #dc3545;
+  border: 1px solid #dc3545;
+  padding: 12px 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+} */

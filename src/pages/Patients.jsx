@@ -13,8 +13,7 @@ import {
 import DeleteModal from "../components/DeleteModal";
 
 const Patients = () => {
-  const navigate = useNavigate(); // إضافة useNavigate
-  // Dummy data simulating DB response
+  const navigate = useNavigate();
   const statsData = {
     totalCases: 45,
   };
@@ -26,35 +25,30 @@ const Patients = () => {
     { name: "Cold", value: 50, color: "#008000" },
   ];
 
-  // Dummy table data
-  const tableData = Array.from({ length: 45 }).map((_, i) => ({
-    no: i + 1,
-    name: `Patient ${i + 1}`,
-    doctor: `Dr. Smith`,
-    date: "2025-05-20",
-    time: "12:30 PM",
-    complaint: "Chest Pain",
-    status: ["urgent", "critical", "cold", "moderate"][i % 4],
-  }));
-
-  // const statusIcons = {
-  //   urgent: "/urgent.svg",
-  //   critical: "/critical.svg",
-  //   cold: "/cold.svg",
-  //   moderate: "/moderate.svg",
-  // };
+  const [patients, setPatients] = useState(
+    Array.from({ length: 45 }).map((_, i) => ({
+      no: i + 1,
+      name: `Patient ${i + 1}`,
+      doctor: `Dr. Smith`,
+      date: "2025-05-20",
+      time: "12:30 PM",
+      complaint: "Chest Pain",
+      status: ["urgent", "critical", "cold", "moderate"][i % 4],
+    }))
+  );
 
   const itemsPerPage = 15;
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.ceil(tableData.length / itemsPerPage);
-  const pageData = tableData.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  const totalPages = Math.ceil(patients.length / itemsPerPage);
+  const [searchTerm, setSearchTerm] = useState("");
+  const pageData = patients
+    .filter((patient) =>
+      patient.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [patientToDelete, setPatientToDelete] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
 
   const handlePrev = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
@@ -65,7 +59,7 @@ const Patients = () => {
   };
 
   const handleViewDetails = (id) => {
-    navigate(`/patients/${id}`); // استخدام navigate بدل كان هناك خطأ
+    navigate(`/patients/${id}`);
   };
 
   const handleDeleteClick = (patient) => {
@@ -73,15 +67,19 @@ const Patients = () => {
     setIsDeleteModalOpen(true);
   };
 
-  const confirmDelete = () => {
-    console.log("Deleting patient:", patientToDelete.name);
-    setIsDeleteModalOpen(false);
-    setPatientToDelete(null);
-    alert(`${patientToDelete.name} has been deleted.`);
+  const handleDeletePatient = () => {
+    if (patientToDelete) {
+      const filtered = patients.filter((p) => p.no !== patientToDelete.no);
+      setPatients(filtered);
+      setIsDeleteModalOpen(false);
+      setPatientToDelete(null);
+    }
   };
+
   const handlePrint = () => {
     window.print();
   };
+
   return (
     <div className='patients-page'>
       {/* SECTION 1 */}
@@ -168,7 +166,7 @@ const Patients = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className='search-input'
               />
-              <LuSearch size={15} className="search-icon"/>
+              <LuSearch size={15} className='search-icon' />
               <button className='print-btn' onClick={handlePrint}>
                 <LuPrinter size={20} />
               </button>
@@ -256,9 +254,12 @@ const Patients = () => {
 
       <DeleteModal
         isOpen={isDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen(false)}
-        onConfirm={confirmDelete}
-        itemType='Patient'
+        onClose={() => {
+          setIsDeleteModalOpen(false);
+          setPatientToDelete(null);
+        }}
+        onConfirm={handleDeletePatient}
+        itemType='patient'
       />
     </div>
   );

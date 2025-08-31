@@ -113,35 +113,50 @@
 }
 
 /* Add input and select styles */
-.modal-content label {
-  font-size: 0.875rem;
+.modal-content.second {
+  background: white;
+  border-radius: 12px;
+  padding: 15px;
+  max-width: 370px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.modal-content.second label {
+  font-size: 1.3rem;
   font-weight: bold;
   color: #0d425d;
   text-align: left;
   width: 100%;
   display: block;
 }
-
-.modal-content input,
-.modal-content select {
+.modal-body{
+  width: 80%;
+}
+ 
+.modal-content.second input,
+.modal-content.second select {
   padding: 8px 12px;
   border: 1px solid #0d425d;
   border-radius: 5px;
-  font-size: 14px;
+  font-size: 1.5rem;
   transition: all 0.2s ease;
   background-color: #fff;
   margin-bottom: 16px;
-  width: 250px;
-}
+ }
 
-.modal-content input:focus,
-.modal-content select:focus {
+.modal-content.second input:focus,
+.modal-content.second select:focus {
   outline: none;
   border-color: #0d425d;
   box-shadow: 0 0 0 3px rgba(13, 66, 93, 0.1);
 }
 
-.modal-content h2 {
+.modal-content.second h2 {
   color: #0d425d;
   margin-bottom: 16px;
 }

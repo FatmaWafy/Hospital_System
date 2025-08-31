@@ -533,3 +533,20 @@
   cursor: pointer;
   margin-left: 8px;
 }
+/* Additional styles for Edit mode */
+.input-field:disabled {
+  background-color: #f8f9fa;
+  color: #828282;
+  border-color: #e0e0e0;
+}
+
+.input-field:enabled {
+  background-color: #ffffff;
+  color: #0d425d;
+  border-color: #0d425d;
+}
+
+.change-photo-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

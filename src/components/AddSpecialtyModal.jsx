@@ -17,7 +17,7 @@ const AddSpecialtyModal = ({ isOpen, onClose, onAdd }) => {
 
   return (
     <div className="modal-overlay">
-      <div className="modal-content" style={{ width: "300px" }}>
+      <div className="modal-content second">
         <div className="modal-header">
           <LuPlus size={48} className="text-critical-red" />
           <h2 style={{ color: "#0d425d", marginBottom: "0px" }}>Add New Specialty</h2>

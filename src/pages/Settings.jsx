@@ -9,11 +9,13 @@ import {
   LuEye,
   LuFileEdit,
   LuPrinter,
+  LuSearch,
   LuTrash2,
 } from "react-icons/lu";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Settings = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("profile");
   const [isEditing, setIsEditing] = useState(false);
   const [userData, setUserData] = useState({
@@ -42,6 +44,7 @@ const Settings = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedSpecialty, setSelectedSpecialty] = useState(null);
+  const [selectedDoctor, setSelectedDoctor] = useState(null); // Add this line
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
@@ -51,16 +54,19 @@ const Settings = () => {
       id: i + 1,
       name: `Dr. ${i + 1}`,
       specialty: `Specialty ${(i % 5) + 1}`,
-      date: "27/08/2025",
-      status: i % 2 === 0 ? "Active" : "Inactive",
+      level: i % 2 === 0 ? "Junior" : "Senior",
+      loginDate: "11/5/2025",
+      status: i % 2 === 0 ? "online" : "offline",
     }))
   );
+
   const [doctorCurrentPage, setDoctorCurrentPage] = useState(1);
   const doctorItemsPerPage = 10;
 
   const handleSave = () => {
     console.log("Saving user data:", userData);
     setIsEditing(false);
+    console.log(setDoctors);
   };
 
   const handleInputChange = (field, value) => {
@@ -103,6 +109,15 @@ const Settings = () => {
     setSelectedSpecialty(null);
   };
 
+  const handleDeleteDoctor = () => {
+    if (selectedDoctor) {
+      const filtered = doctors.filter((d) => d.id !== selectedDoctor.id);
+      setDoctors(filtered);
+      // Placeholder: fetch(`/api/doctors/${selectedDoctor.id}`, { method: 'DELETE' })
+      setIsDeleteModalOpen(false);
+      setSelectedDoctor(null);
+    }
+  };
   const requestSort = (key) => {
     let direction = "asc";
     if (sortConfig.key === key && sortConfig.direction === "asc") {
@@ -128,6 +143,7 @@ const Settings = () => {
   const specialtyTotalPages = Math.ceil(
     filteredSpecialties.length / itemsPerPage
   );
+
   const specialtyPageData = filteredSpecialties.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -180,6 +196,7 @@ const Settings = () => {
           />
         </a>
       </div>
+
       <div className='settings-welcome'>
         <div className='welcome-text'>
           <h2>Good morning, ER Admin</h2>
@@ -192,6 +209,7 @@ const Settings = () => {
           <img src='/calendar.svg' alt='Calendar' className='calendar-icon' />
         </button>
       </div>
+
       <div className='tabs-container'>
         <button
           className={`tab-btn ${activeTab === "profile" ? "active" : ""}`}
@@ -224,6 +242,7 @@ const Settings = () => {
           Feed backs
         </button>
       </div>
+
       <div className='tab-content'>
         {activeTab === "profile" && (
           <div>
@@ -369,11 +388,13 @@ const Settings = () => {
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className='search-input'
                   />
+                  <LuSearch size={15} className='search-icon' />
                   <button className='print-btn' onClick={handlePrint}>
                     <LuPrinter size={20} />
                   </button>
                 </div>
               </div>
+
               <table className='specialties-table printable-table'>
                 <thead>
                   <tr>
@@ -425,6 +446,7 @@ const Settings = () => {
                   ))}
                 </tbody>
               </table>
+
               <div className='pagination'>
                 <button
                   className='pagination-btn'
@@ -458,97 +480,171 @@ const Settings = () => {
         )}
         {activeTab === "doctors" && (
           <div className='doctors-tab'>
-            <div className='list-header'>
-              <h2 className='section-title'>DOCTORS LIST</h2>
-              <div className='list-actions'>
-                <input
-                  type='text'
-                  placeholder='Search...'
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className='search-input'
-                />
-                <button className='print-btn' onClick={handlePrint}>
-                  <LuPrinter size={20} />
+            <div className='hint-container'>
+              <p className='hint-text-doctors'>
+                To register a new doctor, enter: Full Name, Email, Phone Number,
+                Level, and Specialty.
+              </p>
+              <button
+                className='add-btn'
+                onClick={() => navigate("/settings/add-doctor")}
+              >
+                + Add New Doctor
+              </button>
+            </div>
+            <div className='specialties-table-section'>
+              <div className='list-header'>
+                <h2 className='section-title'>DOCTORS LIST</h2>
+                <div className='list-actions'>
+                  <input
+                    type='text'
+                    placeholder='Search...'
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className='search-input'
+                  />
+                  <LuSearch size={15} className='search-icon' />
+                  <button className='print-btn' onClick={handlePrint}>
+                    <LuPrinter size={20} />
+                  </button>
+                </div>
+              </div>
+
+              <table className='doctors-table printable-table'>
+                <thead>
+                  <tr>
+                    <th onClick={() => requestSort("id")}>
+                      No
+                      <span className='sort-arrow'>
+                        {sortConfig.key === "id"
+                          ? sortConfig.direction === "asc"
+                            ? "▲"
+                            : "▼"
+                          : ""}
+                      </span>
+                    </th>
+                    <th onClick={() => requestSort("name")}>
+                      Dr-Name
+                      <span className='sort-arrow'>
+                        {sortConfig.key === "name"
+                          ? sortConfig.direction === "asc"
+                            ? "▲"
+                            : "▼"
+                          : ""}
+                      </span>
+                    </th>
+                    <th onClick={() => requestSort("specialty")}>
+                      Specialty
+                      <span className='sort-arrow'>
+                        {sortConfig.key === "specialty"
+                          ? sortConfig.direction === "asc"
+                            ? "▲"
+                            : "▼"
+                          : ""}
+                      </span>
+                    </th>
+                    <th onClick={() => requestSort("level")}>
+                      Level
+                      <span className='sort-arrow'>
+                        {sortConfig.key === "level"
+                          ? sortConfig.direction === "asc"
+                            ? "▲"
+                            : "▼"
+                          : ""}
+                      </span>
+                    </th>
+                    <th onClick={() => requestSort("loginDate")}>
+                      Last Login Date
+                      <span className='sort-arrow'>
+                        {sortConfig.key === "loginDate"
+                          ? sortConfig.direction === "asc"
+                            ? "▲"
+                            : "▼"
+                          : ""}
+                      </span>
+                    </th>
+                    <th onClick={() => requestSort("status")}>
+                      Status
+                      <span className='sort-arrow'>
+                        {sortConfig.key === "status"
+                          ? sortConfig.direction === "asc"
+                            ? "▲"
+                            : "▼"
+                          : ""}
+                      </span>
+                    </th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {doctorPageData.map((d) => (
+                    <tr key={d.id}>
+                      <td>{d.id}</td>
+                      <td>{d.name}</td>
+                      <td>{d.specialty}</td>
+                      <td>{d.level}</td>
+                      <td>{d.loginDate}</td>
+                      <td>
+                        <span
+                          className={`status-badge ${
+                            d.status === "online" ? "online" : "offline"
+                          }`}
+                        >
+                          {d.status}
+                        </span>
+                      </td>
+                      <td className='actions-cell'>
+                        <button
+                          className='action-btn view-btn'
+                          onClick={() =>
+                            navigate(`/settings/edit-doctor/${d.id}`)
+                          }
+                        >
+                          <LuFileEdit size={18} />
+                        </button>
+                        <button
+                          className='action-btn delete-btn'
+                          onClick={() => {
+                            setSelectedDoctor(d);
+                            setIsDeleteModalOpen(true);
+                          }}
+                        >
+                          <LuTrash2 size={18} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              <div className='pagination'>
+                <button
+                  className='pagination-btn'
+                  onClick={handlePrevDoctor}
+                  disabled={doctorCurrentPage === 1}
+                >
+                  <LuChevronLeft size={18} />
+                </button>
+                {Array.from({ length: doctorTotalPages }).map((_, i) => (
+                  <button
+                    key={i + 1}
+                    className={`pagination-page ${
+                      doctorCurrentPage === i + 1 ? "active" : ""
+                    }`}
+                    onClick={() => setDoctorCurrentPage(i + 1)}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+                <span className='pagination-dots'>...</span>
+                <button
+                  className='pagination-btn'
+                  onClick={handleNextDoctor}
+                  disabled={doctorCurrentPage === doctorTotalPages}
+                >
+                  <LuChevronRight size={18} />
                 </button>
               </div>
-            </div>
-            <table className='doctors-table printable-table'>
-              <thead>
-                <tr>
-                  <th>No</th>
-                  <th>Name</th>
-                  <th>Specialty</th>
-                  <th>Date</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {doctorPageData.map((d) => (
-                  <tr key={d.id}>
-                    <td>{d.id}</td>
-                    <td>{d.name}</td>
-                    <td>{d.specialty}</td>
-                    <td>{d.date}</td>
-                    <td>
-                      <span
-                        className={`status-badge ${
-                          d.status === "Active" ? "online" : "offline"
-                        }`}
-                      >
-                        {d.status}
-                      </span>
-                    </td>
-                    <td className='actions-cell'>
-                      <button
-                        className='action-btn view-btn'
-                        onClick={() => {
-                          // Handle view logic
-                        }}
-                      >
-                        <LuEye size={18} />
-                      </button>
-                      <button
-                        className='action-btn delete-btn'
-                        onClick={() => {
-                          // Handle delete logic
-                        }}
-                      >
-                        <LuTrash2 size={18} />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <div className='pagination'>
-              <button
-                className='pagination-btn'
-                onClick={handlePrevDoctor}
-                disabled={doctorCurrentPage === 1}
-              >
-                <LuChevronLeft size={18} />
-              </button>
-              {Array.from({ length: doctorTotalPages }).map((_, i) => (
-                <button
-                  key={i + 1}
-                  className={`pagination-page ${
-                    doctorCurrentPage === i + 1 ? "active" : ""
-                  }`}
-                  onClick={() => setDoctorCurrentPage(i + 1)}
-                >
-                  {i + 1}
-                </button>
-              ))}
-              <span className='pagination-dots'>...</span>
-              <button
-                className='pagination-btn'
-                onClick={handleNextDoctor}
-                disabled={doctorCurrentPage === doctorTotalPages}
-              >
-                <LuChevronRight size={18} />
-              </button>
             </div>
           </div>
         )}
@@ -564,6 +660,7 @@ const Settings = () => {
         )}
       </div>
 
+      {/* ACtions Modals */}
       <AddSpecialtyModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
@@ -578,8 +675,8 @@ const Settings = () => {
       <DeleteModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
-        onConfirm={handleDeleteSpecialty}
-        itemType='Specialty'
+        onConfirm={selectedDoctor ? handleDeleteDoctor : handleDeleteSpecialty}
+        itemType={selectedDoctor ? "Doctor" : "Specialty"}
       />
     </div>
   );

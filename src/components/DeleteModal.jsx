@@ -1,5 +1,5 @@
 "use client"
-import { LuX,  LuTrash2 } from "react-icons/lu"
+import { LuX, LuTrash2 } from "react-icons/lu"
 import "./DeleteModal.css"
 
 const DeleteModal = ({ isOpen, onClose, onConfirm, itemType = "Doctor" }) => {
@@ -13,7 +13,7 @@ const DeleteModal = ({ isOpen, onClose, onConfirm, itemType = "Doctor" }) => {
           <h2 className="modal-title">Delete Confirmation</h2>
         </div>
         <div className="modal-body">
-          <p className="modal-message">Are you sure you want to Delete this {itemType}?</p>
+          <p className="modal-message">Are you sure you want to Delete this {itemType.toLowerCase()}?</p>
         </div>
         <div className="modal-footer">
           <button className="btn-secondary" onClick={onClose}>
