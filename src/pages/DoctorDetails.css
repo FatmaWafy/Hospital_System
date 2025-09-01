@@ -47,40 +47,9 @@
   overflow: hidden;
 }
 
-/* Tabs */
-.tabs-container {
-  display: flex;
-  gap: 15px;
-  margin: 15px 0 15px 10px;
-}
+ 
 
-.tab-btn {
-  background: none;
-  border: 3px solid transparent;
-  padding: 16px 20px;
-  font-size: 0.950rem;
-  font-weight: 600;
-  color: #828282;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  position: relative;
-  text-align: center;
-}
-
-.tab-btn:hover {
-  color: #0d425d;
-}
-
-.tab-btn.active {
-  color: #0d425d;
-  border-bottom: 3px solid #0d425d;
-}
-
-/* Tab Content */
-.tab-content {
-  padding: 24px;
-}
-
+ 
 /* Info Sections */
 .info-section {
   margin-bottom: 32px;
