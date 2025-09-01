@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Settings.css";
 import DeleteModal from "../components/DeleteModal";
 import AddSpecialtyModal from "../components/AddSpecialtyModal";
@@ -13,11 +13,31 @@ import {
   LuTrash2,
 } from "react-icons/lu";
 import { Link, useNavigate } from "react-router-dom";
+import ViewModal from "../components/ViewModal";
+import FeedbackTab from "../components/FeedbackTab"
 
 const Settings = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("profile");
   const [isEditing, setIsEditing] = useState(false);
+  const [newPhoto, setNewPhoto] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [selectedSpecialty, setSelectedSpecialty] = useState(null);
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+  const [addPatients, setAddPatients] = useState(true);
+  const [allowAssign, setAllowAssign] = useState(true);
+  const [allowConsult, setAllowConsult] = useState(false);
+  const [allowChangeStatus, setAllowChangeStatus] = useState(true);
+  const [notificationMessage, setNotificationMessage] = useState("");
+  const [doctorCurrentPage, setDoctorCurrentPage] = useState(1);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(null);
+  const doctorItemsPerPage = 10;
   const [userData, setUserData] = useState({
     name: "Ahmed Safwat Mohamed",
     jobTitle: "Er Manager",
@@ -26,9 +46,6 @@ const Settings = () => {
     photo: "avatar.svg",
     password: "*****", // Added password field
   });
-  const [newPhoto, setNewPhoto] = useState(null);
-
-  // For Specialties tab
   const [specialties, setSpecialties] = useState(
     Array.from({ length: 50 }).map((_, i) => ({
       id: i + 1,
@@ -38,17 +55,6 @@ const Settings = () => {
       status: i % 2 === 0 ? "Enabled" : "Disabled",
     }))
   );
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [selectedSpecialty, setSelectedSpecialty] = useState(null);
-  const [selectedDoctor, setSelectedDoctor] = useState(null); // Add this line
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
-
-  // For Doctors tab
   const [doctors, setDoctors] = useState(
     Array.from({ length: 50 }).map((_, i) => ({
       id: i + 1,
@@ -59,10 +65,13 @@ const Settings = () => {
       status: i % 2 === 0 ? "online" : "offline",
     }))
   );
+  const [feedbackData, setFeedbackData] = useState([
+    { id: 1, date: "2025-08-31", name: "Ahmed Ali", feedback: "Great service, very helpful!" },
+    { id: 2, date: "2025-08-30", name: "Sara Mohamed", feedback: "Need improvement in response time." },
+    // Add more dummy data if needed
+  ]);
 
-  const [doctorCurrentPage, setDoctorCurrentPage] = useState(1);
-  const doctorItemsPerPage = 10;
-
+  // Handling Functions
   const handleSave = () => {
     console.log("Saving user data:", userData);
     setIsEditing(false);
@@ -118,12 +127,60 @@ const Settings = () => {
       setSelectedDoctor(null);
     }
   };
+
   const requestSort = (key) => {
     let direction = "asc";
     if (sortConfig.key === key && sortConfig.direction === "asc") {
       direction = "desc";
     }
     setSortConfig({ key, direction });
+  };
+
+  const handleSavePermissions = () => {
+    const permissions = {
+      addPatients,
+      allowAssign,
+      allowConsult,
+      allowChangeStatus,
+    };
+    // Placeholder: fetch('/api/permissions', { method: 'POST', body: JSON.stringify(permissions) })
+    console.log("Saving permissions:", permissions);
+  };
+
+  const handleSendNotification = () => {
+    if (notificationMessage) {
+      // Placeholder: fetch('/api/notifications', { method: 'POST', body: JSON.stringify({ message: notificationMessage }) })
+      console.log("Sending notification:", notificationMessage);
+      setNotificationMessage("");
+    }
+  };
+
+  const handlePrevSpecialty = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
+  const handleNextSpecialty = () => {
+    if (currentPage < specialtyTotalPages) setCurrentPage(currentPage + 1);
+  };
+
+  const handlePrevDoctor = () => {
+    if (doctorCurrentPage > 1) setDoctorCurrentPage(doctorCurrentPage - 1);
+  };
+
+  const handleNextDoctor = () => {
+    if (doctorCurrentPage < doctorTotalPages)
+      setDoctorCurrentPage(doctorCurrentPage + 1);
+  };
+
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const handleDeleteFeedback = (id) => {
+    // Placeholder: fetch(`/api/feedback/${id}`, { method: 'DELETE' })
+    setFeedbackData(feedbackData.filter((item) => item.id !== id));
+    console.log("Deleted feedback ID:", id);
+    setIsDeleteModalOpen(false);
   };
 
   const sortedSpecialties = [...specialties].sort((a, b) => {
@@ -149,14 +206,6 @@ const Settings = () => {
     currentPage * itemsPerPage
   );
 
-  const handlePrevSpecialty = () => {
-    if (currentPage > 1) setCurrentPage(currentPage - 1);
-  };
-
-  const handleNextSpecialty = () => {
-    if (currentPage < specialtyTotalPages) setCurrentPage(currentPage + 1);
-  };
-
   const filteredDoctors = doctors.filter(
     (d) =>
       d.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -166,23 +215,15 @@ const Settings = () => {
   const doctorTotalPages = Math.ceil(
     filteredDoctors.length / doctorItemsPerPage
   );
+
   const doctorPageData = filteredDoctors.slice(
     (doctorCurrentPage - 1) * doctorItemsPerPage,
     doctorCurrentPage * doctorItemsPerPage
   );
 
-  const handlePrevDoctor = () => {
-    if (doctorCurrentPage > 1) setDoctorCurrentPage(doctorCurrentPage - 1);
-  };
-
-  const handleNextDoctor = () => {
-    if (doctorCurrentPage < doctorTotalPages)
-      setDoctorCurrentPage(doctorCurrentPage + 1);
-  };
-
-  const handlePrint = () => {
-    window.print();
-  };
+  useEffect(() => {
+    // Placeholder: fetch('/api/feedback').then(res => setFeedbackData(res))
+  }, []);
 
   return (
     <div className='settings-page'>
@@ -356,7 +397,7 @@ const Settings = () => {
           </div>
         )}
         {activeTab === "specialties" && (
-          <div className='specialties-tab'>
+          <div>
             <div className='hint-container'>
               <p className='hint-text'>
                 After adding a new specialty, assign doctors to it from the{" "}
@@ -379,7 +420,7 @@ const Settings = () => {
             </div>
             <div className='specialties-table-section'>
               <div className='list-header'>
-                <h2 className='section-title'>SPECIALTIES LIST</h2>
+                <h2 className='profile-title'>SPECIALTIES LIST</h2>
                 <div className='list-actions'>
                   <input
                     type='text'
@@ -415,9 +456,8 @@ const Settings = () => {
                       <td>{s.date}</td>
                       <td>
                         <span
-                          className={`status-badge ${
-                            s.status === "Enabled" ? "online" : "offline"
-                          }`}
+                          className={`status-badge ${s.status === "Enabled" ? "online" : "offline"
+                            }`}
                         >
                           {s.status}
                         </span>
@@ -458,9 +498,8 @@ const Settings = () => {
                 {Array.from({ length: specialtyTotalPages }).map((_, i) => (
                   <button
                     key={i + 1}
-                    className={`pagination-page ${
-                      currentPage === i + 1 ? "active" : ""
-                    }`}
+                    className={`pagination-page ${currentPage === i + 1 ? "active" : ""
+                      }`}
                     onClick={() => setCurrentPage(i + 1)}
                   >
                     {i + 1}
@@ -479,7 +518,7 @@ const Settings = () => {
           </div>
         )}
         {activeTab === "doctors" && (
-          <div className='doctors-tab'>
+          <div  >
             <div className='hint-container'>
               <p className='hint-text-doctors'>
                 To register a new doctor, enter: Full Name, Email, Phone Number,
@@ -494,7 +533,7 @@ const Settings = () => {
             </div>
             <div className='specialties-table-section'>
               <div className='list-header'>
-                <h2 className='section-title'>DOCTORS LIST</h2>
+                <h2 className='profile-title'>DOCTORS LIST</h2>
                 <div className='list-actions'>
                   <input
                     type='text'
@@ -586,9 +625,8 @@ const Settings = () => {
                       <td>{d.loginDate}</td>
                       <td>
                         <span
-                          className={`status-badge ${
-                            d.status === "online" ? "online" : "offline"
-                          }`}
+                          className={`status-badge ${d.status === "online" ? "online" : "offline"
+                            }`}
                         >
                           {d.status}
                         </span>
@@ -628,9 +666,8 @@ const Settings = () => {
                 {Array.from({ length: doctorTotalPages }).map((_, i) => (
                   <button
                     key={i + 1}
-                    className={`pagination-page ${
-                      doctorCurrentPage === i + 1 ? "active" : ""
-                    }`}
+                    className={`pagination-page ${doctorCurrentPage === i + 1 ? "active" : ""
+                      }`}
                     onClick={() => setDoctorCurrentPage(i + 1)}
                   >
                     {i + 1}
@@ -649,15 +686,67 @@ const Settings = () => {
           </div>
         )}
         {activeTab === "requests" && (
-          <div className='requests-tab-placeholder'>
-            Requests & Notifications content here
+          <div  >
+            <p className='profile-title'>Requests</p>
+            <div className="permissions-section">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={addPatients}
+                  onChange={(e) => setAddPatients(e.target.checked)}
+                />
+                Add New Patients
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={allowAssign}
+                  onChange={(e) => setAllowAssign(e.target.checked)}
+                />
+                Allow Assign Patients
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={allowConsult}
+                  onChange={(e) => setAllowConsult(e.target.checked)}
+                />
+                Allow Consultation Requests
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={allowChangeStatus}
+                  onChange={(e) => setAllowChangeStatus(e.target.checked)}
+                />
+                Allow Change Status
+              </label>
+              <div className="action-buttons-group">
+                <button className="btn-save" onClick={handleSavePermissions}>
+                  Save
+                </button>
+              </div>
+            </div>
+            <h2 className="profile-title">Send Notification</h2>
+
+            <textarea
+              value={notificationMessage}
+              onChange={(e) => setNotificationMessage(e.target.value.slice(0, 100))}
+              placeholder="Enter your message here, it will be sent to all doctors' notification centers."
+              className="notification-textarea"
+            />
+            <div className="character-count">
+              Maximum 100 characters
+              <span>{notificationMessage.length} / 100</span>
+            </div>
+            <div className="action-buttons-group">
+              <button className="btn-send" onClick={handleSendNotification}>
+                Send
+              </button>
+            </div>
           </div>
         )}
-        {activeTab === "feedbacks" && (
-          <div className='feedbacks-tab-placeholder'>
-            Feed backs content here
-          </div>
-        )}
+        {activeTab === "feedbacks" && <FeedbackTab />}
       </div>
 
       {/* ACtions Modals */}
@@ -675,8 +764,13 @@ const Settings = () => {
       <DeleteModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
-        onConfirm={selectedDoctor ? handleDeleteDoctor : handleDeleteSpecialty}
+        onConfirm={selectedDoctor ? handleDeleteDoctor : handleDeleteSpecialty || handleDeleteFeedback}
         itemType={selectedDoctor ? "Doctor" : "Specialty"}
+      />
+      <ViewModal
+        isOpen={isViewModalOpen}
+        onClose={() => setIsViewModalOpen(null)}
+        feedback={isViewModalOpen}
       />
     </div>
   );

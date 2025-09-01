@@ -1,4 +1,4 @@
-"use client"
+ 
 import { LuX, LuTrash2 } from "react-icons/lu"
 import "./DeleteModal.css"
 
@@ -6,8 +6,8 @@ const DeleteModal = ({ isOpen, onClose, onConfirm, itemType = "Doctor" }) => {
   if (!isOpen) return null
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content">
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <LuTrash2 size={48} className="text-critical-red" />
           <h2 className="modal-title">Delete Confirmation</h2>
