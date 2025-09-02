@@ -47,9 +47,6 @@
   overflow: hidden;
 }
 
- 
-
- 
 /* Info Sections */
 .info-section {
   margin-bottom: 32px;
@@ -374,19 +371,11 @@
   }
 }
 
-.timeline-container {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 80px 0;
-}
-
 .timeline-vertical-line {
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 50%;
+  left: 25%;
   width: 4px;
   background: #0d425d;
   transform: translateX(-50%);
@@ -395,7 +384,7 @@
 
 .timeline-circle {
   position: absolute;
-  left: 50%;
+  left: 25%;
   width: 20px;
   height: 20px;
   background: #0d425d;
@@ -418,46 +407,29 @@
   justify-content: center;
   width: 100%;
   max-width: 1200px;
-  margin: 50px 0;
-  min-height: 150px;
+  margin: 20px 0;
+  min-height: 50px;
   z-index: 2;
 }
-
+.inline-meta {
+    color: #828282;
+    font-weight: 100;
+    font-size: 15px;
+}
 .timeline-card {
-  width: 334px;
+  width: 280px;
   background: #f5f9fb;
   box-shadow: 15px 1px 18px 0px #dadee8;
   border-radius: 27px;
   padding: 10px 20px;
   z-index: 3;
   position: relative;
-}
-
-.timeline-row.left .timeline-card {
-  margin-right: auto;
-}
-
-.timeline-row.right .timeline-card {
-  margin-left: auto;
-}
-
-.timeline-row.left::after,
-.timeline-row.right::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  height: 2px;
-  background: #0d425d;
-  z-index: 1;
+  margin-left: -80px;
+  height: fit-content;
 }
 
 .timeline-row.left::after {
   left: calc(50% - 226px);
-  width: 226px;
-}
-
-.timeline-row.right::after {
-  left: 50%;
   width: 226px;
 }
 
@@ -497,8 +469,10 @@
 }
 
 .change-link {
-  color: #c80e14;
-  font-weight: 600;
+ color: #0d425d;
+  font-weight: 400;
+  font-size: 14px;
+  text-decoration: underline;
   cursor: pointer;
   margin-left: 8px;
 }
@@ -519,7 +493,214 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+/* 88888888888 */
+.timeline-row.right {
+  position: relative;
+}
+
+/* تنسيقات الجدول الزمني المعدلة */
+.timeline-section {
+  position: relative;
+  padding-bottom: 70px; /* مساحة لأزرار التصفح */
+}
+
+.timeline-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
+  max-width: 1000px;
+}
+
+.timeline-vertical-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 25%;
+  width: 4px;
+  background: #0d425d;
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+.timeline-circle {
+  position: absolute;
+  left: 25%;
+  width: 12px;
+  height: 12px;
+  background: #0d425d;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+.timeline-circle.top {
+  top: 0;
+}
+
+.timeline-circle.bottom {
+  bottom: 0;
+}
 
  
 
+.time-label {
+  position: absolute;
+  left: 12%;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #828282;
+  font-weight: 400;
+  font-size: 14px;
+  width: 100px;
+  text-align: right;
+}
 
+.timeline-card::before {
+  content: "";
+  position: absolute;
+  left: -50px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 1px;
+  background: #0d425d;
+}
+.timeline-card::after {
+  content: "";
+  position: absolute;
+  left: -60px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 3px solid #0d425d;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.card-title {
+  color: #0d425d;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.card-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.card-body p {
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  color: #0d425d;
+  margin: 4px 0;
+}
+
+.card-actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 15px;
+}
+
+.custom-link {
+  color: #0d425d;
+  font-weight: 400;
+  font-size: 14px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+ 
+
+/* Pagination Controls */
+.pagination-controls {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.pagination-btn {
+  background: none;
+  border: 1px solid #0d425d;
+  color: #0d425d;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background-color: #0d425d;
+  color: white;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-info {
+  color: #0d425d;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* تحسينات التجاوب للشاشات الصغيرة */
+@media (max-width: 768px) {
+  .timeline-container {
+    padding: 20px 0;
+  }
+
+  .timeline-vertical-line {
+    left: 30px;
+  }
+
+  .timeline-circle {
+    left: 30px;
+  }
+
+  .time-label {
+    left: 10px;
+    width: 60px;
+    font-size: 12px;
+  }
+
+  .timeline-card {
+    width: calc(100% - 100px);
+    margin-left: 50px;
+    padding: 10px;
+  }
+
+  .timeline-card::before {
+    left: -15px;
+    width: 15px;
+  }
+
+  .card-title {
+    font-size: 14px;
+  }
+
+  .card-body p {
+    font-size: 12px;
+  }
+
+  .pagination-controls {
+    position: static;
+    justify-content: center;
+    margin-top: 20px;
+  }
+}

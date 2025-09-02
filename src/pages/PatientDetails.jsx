@@ -2,6 +2,11 @@ import React, { useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import "./PatientDetails.css";
 
+// المودالات
+import DeclineModal from "../components/DeclineModal";
+import ChangeDoctorModal from "../components/ChangeDoctorModal";
+import ChangePatientStatusModal from "../components/ChangePatientStatusModal";
+
 const PatientDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -10,18 +15,69 @@ const PatientDetails = () => {
   const selectedStatus = queryParams.get("status");
 
   const [isEditing, setIsEditing] = useState(false);
+  const [isGenderOpen, setIsGenderOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("basic");
 
-  const handleSave = () => {
-    console.log("Saving patient data:", patient);
-    setIsEditing(false);
-  };
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const eventsPerPage = 5;
 
-  const handleDelete = () => {
-    if (window.confirm("Are you sure you want to delete this patient?")) {
-      console.log("Deleting patient with ID:", id);
-      navigate("/patients");
+  // Modal states
+  const [isDeclineOpen, setIsDeclineOpen] = useState(false);
+  const [isChangeDoctorOpen, setIsChangeDoctorOpen] = useState(false);
+  const [isChangeStatusOpen, setIsChangeStatusOpen] = useState(false);
+
+  const [selectedEvent, setSelectedEvent] = useState(null);
+
+  // بيانات الأحداث الخاصة بالـ Patient Flow
+  const [timelineEvents, setTimelineEvents] = useState([
+    {
+      id: 1,
+      time: "07:00 PM",
+      title: "Patient Registered",
+      icon: "/f1.svg",
+      by: "Ahmed Safwat",
+      assignedTo: "Mina Samir",
+      type: "registration"
+    },
+    {
+      id: 2,
+      time: "07:30 PM",
+      title: "Patient Received",
+      icon: "/f2.svg",
+      by: "Mina Samir",
+      type: "receive"
+    },
+    {
+      id: 3,
+      time: "07:33 PM",
+      title: "Patient Assigned",
+      icon: "/f3.svg",
+      by: "Mina Samir",
+      to: "Abubakr Ahmed",
+      type: "assignment"
+    },
+    {
+      id: 4,
+      time: "07:33 PM",
+      title: "Patient Consulted",
+      icon: "/f4.svg",
+      by: "Mina Samir",
+      to: "Sami Ahmed",
+      specialty: "Cardiology",
+      type: "consultation"
+    },
+    {
+      id: 5,
+      time: "09:35 PM",
+      title: "Patient's fate",
+      icon: "/f5.svg",
+      by: "Mina Samir",
+      status: "Outpatient",
+      notes: "-",
+      type: "outcome"
     }
-  };
+  ]);
 
   // Dummy fetched patient data
   const [patient, setPatient] = useState({
@@ -43,13 +99,67 @@ const PatientDetails = () => {
     status: selectedStatus || "urgent",
   });
 
-  const [activeTab, setActiveTab] = useState("basic");
-  const [isGenderOpen, setIsGenderOpen] = useState(false);
-
   const genders = ["Male", "Female"];
+
+  // حساب الأحداث المعروضة حالياً
+  const indexOfLastEvent = currentPage * eventsPerPage;
+  const indexOfFirstEvent = indexOfLastEvent - eventsPerPage;
+  const currentEvents = timelineEvents.slice(indexOfFirstEvent, indexOfLastEvent);
+  const totalPages = Math.ceil(timelineEvents.length / eventsPerPage);
+
+  const handleSave = () => {
+    console.log("Saving patient data:", patient);
+    setIsEditing(false);
+  };
+
+  const handleDelete = () => {
+    if (window.confirm("Are you sure you want to delete this patient?")) {
+      console.log("Deleting patient with ID:", id);
+      navigate("/patients");
+    }
+  };
 
   const handleInputChange = (field, value) => {
     setPatient((prev) => ({ ...prev, [field]: value }));
+  };
+
+  // تحديد الإجراءات بناءً على نوع الحدث
+  const getEventActions = (eventType) => {
+    switch (eventType) {
+      case "registration":
+        return ["view", "changeDoctor"];
+      case "assignment":
+      case "consultation":
+        return ["decline", "changeDoctor"];
+      case "receive":
+        return ["view"];
+      case "outcome":
+        return ["view", "changeStatus"];
+      default:
+        return [];
+    }
+  };
+
+  // Action Click
+  const handleActionClick = (event, action) => {
+    setSelectedEvent(event);
+
+    if (action === "decline") {
+      setIsDeclineOpen(true);
+    } else if (action === "changeDoctor") {
+      setIsChangeDoctorOpen(true);
+    } else if (action === "changeStatus") {
+      setIsChangeStatusOpen(true);
+    } else if (action === "view") {
+      alert(`Viewing details for event ${event.id}`);
+    }
+  };
+
+  // تغيير الصفحة
+  const goToPage = (pageNumber) => {
+    if (pageNumber > 0 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
   };
 
   return (
@@ -232,166 +342,131 @@ const PatientDetails = () => {
             </div>
           )}
           {activeTab === "flow" && (
-            <div className='timeline-container'>
-              <div className='timeline-vertical-line'></div>
-              <div className='timeline-circle top'></div>
-              <div className='timeline-row left'>
-                <div className='timeline-card'>
-                  <div className='card-header'>
-                    <span className='card-title'>Patient Registered</span>
-                    <img src='/f1.svg' alt='Icon' className='card-icon' />
+            <div className="timeline-section">
+              <div className="timeline-container">
+                <div className="timeline-vertical-line" />
+                <div className="timeline-circle top" />
+
+                {currentEvents.map((event) => (
+                  <div key={event.id} className="timeline-row right">
+                    <div className="time-label">At {event.time}</div>
+
+                    <div className="timeline-card">
+                      <div className="card-header">
+                        <span className="card-title">
+                          {event.title}
+                        </span>
+                        <img src={event.icon} alt="Icon" className="card-icon" />
+                      </div>
+
+                      <div className="card-body">
+                        {event.by && <span className="inline-meta">By: {event.by}</span>}
+                        {event.to && (
+                          <span className="inline-meta"> <br />To: {event.to}</span>
+                        )}
+                        {event.assignedTo && (
+                          <span className="inline-meta"> <br />Assigned to: {event.assignedTo}</span>
+                        )}
+                        {event.specialty && (
+                          <span className="inline-meta"> <br />Specialty: {event.specialty}</span>
+                        )}
+                        {event.status && (
+                          <span className="inline-meta"> <br />{event.status}</span>
+                        )}
+                        {event.notes &&
+                          <span className="inline-meta"><br /> Notes: {event.notes}</span>}
+
+                        <div className="card-actions">
+                          {getEventActions(event.type).map((action) => (
+                            <span
+                              key={action}
+                              className={action === "view" ? "custom-link" : "change-link"}
+                              onClick={() => handleActionClick(event, action)}
+                            >
+                              {action === "changeDoctor"
+                                ? "Change"
+                                : action === "changeStatus"
+                                  ? "Change"
+                                  : action.charAt(0).toUpperCase() + action.slice(1)}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div className='card-body'>
-                    <p>at 07:00 PM</p>
-                    <p>By: Ahmed Safwat</p>
-                    <p>
-                      Assigned to: Mina Samir{" "}
-                      <span
-                        className='change-link'
-                        onClick={() =>
-                          alert("Change assigned doctor (simulated)")
-                        }
-                      >
-                        change
-                      </span>
-                    </p>
-                  </div>
-                </div>
+                ))}
+
+                <div className="timeline-circle bottom" />
               </div>
-              <div className='timeline-row right'>
-                <div className='timeline-card'>
-                  <div className='card-header'>
-                    <span className='card-title'>Patient Received</span>
-                    <img src='/f2.svg' alt='Icon' className='card-icon' />
-                  </div>
-                  <div className='card-body'>
-                    <p>at 07:30 PM</p>
-                    <p>By: Mina Samir</p>
-                  </div>
+
+              {/* Pagination Controls */}
+              {timelineEvents.length > eventsPerPage && (
+                <div className="pagination-controls">
+                  <button
+                    className="pagination-btn"
+                    onClick={() => goToPage(currentPage - 1)}
+                    disabled={currentPage === 1}
+                  >
+                    ←
+                  </button>
+                  <span className="pagination-info">
+                    Page {currentPage} of {totalPages}
+                  </span>
+                  <button
+                    className="pagination-btn"
+                    onClick={() => goToPage(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                  >
+                    →
+                  </button>
                 </div>
-              </div>
-              <div className='timeline-row right'>
-                <div className='timeline-card'>
-                  <div className='card-header'>
-                    <span className='card-title'>Patient Assigned</span>
-                    <img src='/f3.svg' alt='Icon' className='card-icon' />
-                  </div>
-                  <div className='card-body'>
-                    <p>at 07:33 PM</p>
-                    <p>
-                      By: Mina Samir{" "}
-                      <span
-                        className='change-link'
-                        onClick={() =>
-                          alert("Decline action (simulated)")
-                        }
-                      >
-                        Decline
-                      </span>
-                    </p>
-                    <p>
-                      To: Abubakr Ahmed{" "}
-                      <span
-                        className='change-link'
-                        onClick={() =>
-                          alert("Change assigned doctor (simulated)")
-                        }
-                      >
-                        change
-                      </span>
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className='timeline-row left'>
-                <div className='timeline-card'>
-                  <div className='card-header'>
-                    <span className='card-title'>Patient Consulted</span>
-                    <img src='/f4.svg' alt='Icon' className='card-icon' />
-                  </div>
-                  <div className='card-body'>
-                    <p>at 07:33 PM</p>
-                    <p>
-                      By: Mina Samir{" "}
-                      <span
-                        className='change-link'
-                        onClick={() =>
-                          alert("Decline action (simulated)")
-                        }
-                      >
-                        Decline
-                      </span>
-                    </p>
-                    <p>
-                      To: Sami Ahmed{" "}
-                      <span
-                        className='change-link'
-                        onClick={() =>
-                          alert("Change assigned doctor (simulated)")
-                        }
-                      >
-                        change
-                      </span>
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className='timeline-row right'>
-                <div className='timeline-card'>
-                  <div className='card-header'>
-                    <span className='card-title'>Patient’s fate</span>
-                    <img src='/f5.svg' alt='Icon' className='card-icon' />
-                  </div>
-                  <div className='card-body'>
-                    <p>
-                      Outpatient{" "}
-                      <span
-                        className='change-link'
-                        onClick={() =>
-                          alert("Change patient fate (simulated)")
-                        }
-                      >
-                        change
-                      </span>
-                    </p>
-                    <p>at 09:35 PM</p>
-                    <p>By: Mina Samir</p>
-                    <p>Notes: -</p>
-                  </div>
-                </div>
-              </div>
-              <div className='timeline-circle bottom'></div>
+              )}
             </div>
           )}
         </div>
-
       </div>
+
+      {/* المودالات */}
+      <DeclineModal
+        isOpen={isDeclineOpen}
+        onClose={() => setIsDeclineOpen(false)}
+        onConfirm={() => {
+          console.log("Declined:", selectedEvent);
+          setIsDeclineOpen(false);
+        }}
+        itemType="Request"
+      />
+
+      <ChangeDoctorModal
+        isOpen={isChangeDoctorOpen}
+        onClose={() => setIsChangeDoctorOpen(false)}
+        onConfirm={(doctor) => {
+          console.log("Doctor changed to:", doctor);
+          setIsChangeDoctorOpen(false);
+        }}
+        currentDoctor={{ id: 0, name: "Current Doctor" }}
+      />
+
+      <ChangePatientStatusModal
+        isOpen={isChangeStatusOpen}
+        onClose={() => setIsChangeStatusOpen(false)}
+        onConfirm={({ status, notes }) => {
+          if (selectedEvent) {
+            setTimelineEvents((prevEvents) =>
+              prevEvents.map((event) =>
+                event.id === selectedEvent.id
+                  ? { ...event, status, notes } // ✅ تحديث الحالة والنوتس
+                  : event
+              )
+            );
+          }
+          setIsChangeStatusOpen(false);
+        }}
+        currentStatus={selectedEvent?.status || "N/A"}
+      />
+
     </div>
   );
 };
 
 export default PatientDetails;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
