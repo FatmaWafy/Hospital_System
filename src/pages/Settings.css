@@ -85,7 +85,7 @@
 
 .profile-section {
   display: flex;
-  justify-content: space-between;
+   
   gap: 24px;
 }
 
@@ -99,9 +99,15 @@
 
 .personal-info-stack {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 24px;
   margin-left: -200px;
+}
+.personal-info-stack-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 24px;
+  margin-left: 30px;
 }
 .info-item {
   display: flex;
@@ -109,10 +115,11 @@
   gap: 8px;
 }
 
-.input-label {
+.input-label-profile {
   font-size: 0.875rem;
   font-weight: 500;
   color: #0d425d;
+  margin-top: 10px;
 }
 
 .input-field {
@@ -459,4 +466,39 @@
 .btn-send:hover {
   background-color: #0a3549;
 }
- 
+ /* Status Toggle Group */
+.status-toggle-group {
+  display: flex;
+  gap: 16px;
+}
+
+.status-toggle-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 50px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: #f8f9fa;
+  color: #828282;
+}
+
+.status-toggle-btn:hover:not(:disabled) {
+  background-color: #e0e0e0;
+}
+
+.status-toggle-btn.active.online {
+  background-color: #39b54a;
+  color: white;
+}
+
+.status-toggle-btn.active.offline {
+  background-color: #1f2937;
+  color: white;
+}
+
+.status-toggle-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}

@@ -27,6 +27,7 @@ const AddDoctor = () => {
     const file = event.target.files[0];
     if (file) {
       setNewPhoto(file);
+      console.log(newPhoto)
       // Placeholder: fetch('/api/upload-photo', { method: 'POST', body: file }).then(res => handleChange("photo", res.url))
       console.log("Uploading photo:", file.name);
     }

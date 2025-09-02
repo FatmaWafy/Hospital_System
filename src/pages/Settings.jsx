@@ -290,7 +290,7 @@ const Settings = () => {
             <p className='profile-title'>Personal Info</p>
             <div className='profile-section'>
               <div className='photo-container'>
-                <label className='input-label'>Profile Photo:</label>
+                <label className='input-label-profile'>Profile Photo:</label>
                 <img
                   src={userData.photo}
                   alt='Profile'
@@ -322,7 +322,7 @@ const Settings = () => {
               </div>
               <div className='personal-info-stack'>
                 <div className='info-item'>
-                  <label className='input-label'>Name:</label>
+                  <label className='input-label-profile'>Name:</label>
                   <input
                     type='text'
                     value={userData.name}
@@ -332,7 +332,7 @@ const Settings = () => {
                   />
                 </div>
                 <div className='info-item'>
-                  <label className='input-label'>Job Title:</label>
+                  <label className='input-label-profile'>Job Title:</label>
                   <input
                     type='text'
                     value={userData.jobTitle}
@@ -344,7 +344,7 @@ const Settings = () => {
                   />
                 </div>
                 <div className='info-item'>
-                  <label className='input-label'>Email:</label>
+                  <label className='input-label-profile'>Email:</label>
                   <input
                     type='text'
                     value={userData.email}
@@ -354,7 +354,7 @@ const Settings = () => {
                   />
                 </div>
                 <div className='info-item'>
-                  <label className='input-label'>Password:</label>
+                  <label className='input-label-profile'>Password:</label>
                   <input
                     type='password'
                     value={userData.password}
@@ -366,7 +366,7 @@ const Settings = () => {
                   />
                 </div>
                 <div className='info-item'>
-                  <label className='input-label'>Phone no.:</label>
+                  <label className='input-label-profile'>Phone no.:</label>
                   <input
                     type='text'
                     value={userData.phone}

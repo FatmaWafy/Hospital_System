@@ -1,83 +1,70 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import "./DoctorDetails.css";
-import { useNavigate, useParams } from "react-router-dom";
-import { LuFileEdit, LuTrash2 } from "react-icons/lu";
-// Assuming DeleteModal is imported from your components
+import { useNavigate } from "react-router-dom";
 import DeleteModal from "../components/DeleteModal";
-
+import "./Settings.css";
+ 
 const EditDoctor = () => {
-  const navigate = useNavigate();
-  const { id } = useParams();
-  const [doctorData, setDoctorData] = useState({
-    name: "Omar Essam",
-    email: "omar.essam@gmail.com",
-    password: "123456789",
-    phone: "0123456789",
-    level: "Junior",
-    specialty: "Internal Medicine",
-    status: "Online",
-    photo: "/placeholder-avatar.svg",
-  });
   const [newPhoto, setNewPhoto] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-
-  useEffect(() => {
-    // Placeholder: fetch(`/api/doctors/${id}`).then(res => setDoctorData(res))
-    console.log("Fetching doctor ID:", id);
-  }, [id]);
 
   const handleChange = (field, value) => {
     setDoctorData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handlePhotoChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setNewPhoto(file);
-      // Placeholder: fetch('/api/upload-photo', { method: 'POST', body: file }).then(res => handleChange("photo", res.url))
-      console.log("Uploading photo:", file.name);
-    }
-  };
-
-  const handleSave = () => {
-    if (isEditing) {
-      // Placeholder: Save to backend and update table
-      fetch(`/api/doctors/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(doctorData),
-      })
-        .then((res) => res.json())
-        .then(() => {
-          console.log("Doctor updated:", doctorData);
-          // Simulate table update (e.g., refresh doctors tab)
-          navigate("/settings?tab=doctors");
-        })
-        .catch((err) => console.error("Error saving:", err));
-      setIsEditing(false); // Exit edit mode
-    }
-  };
-
-  const handleEdit = () => {
-    setIsEditing(true);
-  };
+  const [doctorData, setDoctorData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    phone: "",
+    level: "Junior",
+    specialty: "Triage Doctor",
+    status: "Online",
+    photo: "avatar.svg",
+  });
 
   const handleDeleteConfirm = () => {
-    // Placeholder: Delete from backend
-    fetch(`/api/doctors/${id}`, { method: "DELETE" })
-      .then(() => {
-        console.log("Doctor deleted ID:", id);
-        navigate("/settings?tab=doctors");
-      })
-      .catch((err) => console.error("Error deleting:", err));
+    // Placeholder: Delete from backend (if adding then canceling)
+    console.log("Clearing added doctor data");
     setIsDeleteModalOpen(false);
+    navigate("/settings?tab=doctors");
   };
 
   const handleBack = () => {
     navigate("/settings?tab=doctors");
   };
 
+
+  const navigate = useNavigate();
+  const [isEditing, setIsEditing] = useState(false);
+  const [userData, setUserData] = useState({
+    name: "Ahmed Safwat Mohamed",
+    jobTitle: "Er Manager",
+    email: "i.asafwat@gmail.com",
+    phone: "0123456789",
+    photo: "avatar.svg",
+    password: "*****", // Added password field
+  });
+
+
+  // Handling Functions
+  const handleSave = () => {
+    console.log("Saving user data:", userData);
+    setIsEditing(false);
+  };
+
+  const handleInputChange = (field, value) => {
+    setUserData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handlePhotoChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setNewPhoto(file);
+      console.log("Uploading photo:", file.name);
+      console.log(newPhoto);
+    }
+  };
   return (
     <div className="doctor-details-page">
       <div className="doctor-details-content">
@@ -87,131 +74,178 @@ const EditDoctor = () => {
             ← Back to Doctors
           </button>
         </div>
+
         <div className="doctor-details-card">
           <div className="tab-content">
-            <div className="info-section">
-              <h2 className="section-title">Personal Info</h2>
-              <div className="personal-info-grid">
-                <div className="photo-container">
-                  <label className="input-label">Profile Photo:</label>
+            <div>
+              <p className='profile-title'>Personal Info</p>
+              <div className='profile-section'>
+                <div className='photo-container'>
+                  <label className='input-label-profile'>Profile Photo:</label>
                   <img
-                    src={doctorData.photo}
-                    alt="Profile"
-                    className="profile-photo"
+                    src={userData.photo}
+                    alt='Profile'
+                    className='profile-photo'
                   />
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handlePhotoChange}
-                    style={{ display: "none" }}
-                    id="photoInput"
-                    disabled={!isEditing}
-                  />
+                  {isEditing && (
+                    <>
+                      <input
+                        type='file'
+                        accept='image/*'
+                        onChange={handlePhotoChange}
+                        style={{ display: "none" }}
+                        id='photoInput'
+                      />
+                      <button
+                        className='btn-edit-photo'
+                        onClick={() =>
+                          document.getElementById("photoInput").click()
+                        }
+                      >
+                        <img
+                          src='f2.svg'
+                          alt='Change Photo'
+                          className='change-photo-icon'
+                        />
+                      </button>
+                    </>
+                  )}
+                </div>
+                <div className='personal-info-stack-details'>
+                  <div>
+                    <div className='info-item'>
+                    <label className='input-label-profile'>Name:</label>
+                    <input
+                      type='text'
+                      value={userData.name}
+                      onChange={(e) => handleInputChange("name", e.target.value)}
+                      readOnly={!isEditing}
+                      className={`input-field ${!isEditing ? "readonly" : ""}`}
+                    />
+                  </div>
+                  <div className='info-item'>
+                    <label className='input-label-profile'>Job Title:</label>
+                    <input
+                      type='text'
+                      value={userData.jobTitle}
+                      onChange={(e) =>
+                        handleInputChange("jobTitle", e.target.value)
+                      }
+                      readOnly={!isEditing}
+                      className={`input-field ${!isEditing ? "readonly" : ""}`}
+                    />
+                  </div>
+                  <div className='info-item'>
+                    <label className='input-label-profile'>Email:</label>
+                    <input
+                      type='text'
+                      value={userData.email}
+                      onChange={(e) => handleInputChange("email", e.target.value)}
+                      readOnly={!isEditing}
+                      className={`input-field ${!isEditing ? "readonly" : ""}`}
+                    />
+                  </div>
+                  </div>
+                  <div>
+                    <div className='info-item'>
+                    <label className='input-label-profile'>Password:</label>
+                    <input
+                      type='password'
+                      value={userData.password}
+                      onChange={(e) =>
+                        handleInputChange("password", e.target.value)
+                      }
+                      readOnly={!isEditing}
+                      className={`input-field ${!isEditing ? "readonly" : ""}`}
+                    />
+                  </div>
+                  <div className='info-item'>
+                    <label className='input-label-profile'>Phone no.:</label>
+                    <input
+                      type='text'
+                      value={userData.phone}
+                      onChange={(e) => handleInputChange("phone", e.target.value)}
+                      readOnly={!isEditing}
+                      className={`input-field ${!isEditing ? "readonly" : ""}`}
+                    />
+                  </div>
+                  </div>
+                  <div>
+                    <div className="info-item">
+                      <label className="input-label-profile">Level:</label>
+                      <select
+                        value={doctorData.level}
+                        onChange={(e) => handleChange("level", e.target.value)}
+                        className={`input-field ${!isEditing ? "readonly" : ""}`}
+                      >
+                        <option>Intern</option>
+                        <option>Junior</option>
+                        <option>Mid-Level</option>
+                        <option>Senior</option>
+                        <option>Specialist</option>
+                        <option>Consultant</option>
+                      </select>
+                    </div>
+                    <div className="info-item">
+                      <label className="input-label-profile">Specialty:</label>
+                      <select
+                        value={doctorData.specialty}
+                        onChange={(e) => handleChange("specialty", e.target.value)}
+                        className={`input-field ${!isEditing ? "readonly" : ""}`}
+                      >
+                        <option>Triage Doctor</option>
+                        <option>Internal Medicine</option>
+                        <option>G. Surgery</option>
+                        <option>Cardiology</option>
+                        <option>Neurology</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+               
+              </div>
+               <div className="info-section">
+                <h3 className="section-title">Status</h3>
+                <div className="status-toggle-group">
                   <button
-                    className="change-photo-btn"
-                    onClick={() => document.getElementById("photoInput").click()}
+                    onClick={() => isEditing && handleInputChange("status", "online")}
                     disabled={!isEditing}
+                    className={`status-toggle-btn ${doctorData.status === "online" ? "active online" : ""}`}
                   >
-                    <LuFileEdit />
+                    Online
+                  </button>
+                  <button
+                    onClick={() => isEditing && handleInputChange("status", "offline")}
+                    disabled={!isEditing}
+                    className={`status-toggle-btn ${doctorData.status === "offline" ? "active offline" : ""}`}
+                  >
+                    Offline
                   </button>
                 </div>
-                <div className="info-item">
-                  <label className="input-label">Name:</label>
-                  <input
-                    type="text"
-                    value={doctorData.name}
-                    onChange={(e) => handleChange("name", e.target.value)}
-                    className="input-field"
-                    disabled={!isEditing}
-                  />
-                </div>
-                <div className="info-item">
-                  <label className="input-label">Email:</label>
-                  <input
-                    type="email"
-                    value={doctorData.email}
-                    onChange={(e) => handleChange("email", e.target.value)}
-                    className="input-field"
-                    disabled={!isEditing}
-                  />
-                </div>
-                <div className="info-item">
-                  <label className="input-label">Password:</label>
-                  <input
-                    type="password"
-                    value={doctorData.password}
-                    onChange={(e) => handleChange("password", e.target.value)}
-                    className="input-field"
-                    disabled={!isEditing}
-                  />
-                </div>
-                <div className="info-item">
-                  <label className="input-label">Phone no.:</label>
-                  <input
-                    type="text"
-                    value={doctorData.phone}
-                    onChange={(e) => handleChange("phone", e.target.value)}
-                    className="input-field"
-                    disabled={!isEditing}
-                  />
-                </div>
-                <div className="info-item">
-                  <label className="input-label">Level:</label>
-                  <select
-                    value={doctorData.level}
-                    onChange={(e) => handleChange("level", e.target.value)}
-                    className="input-field"
-                    disabled={!isEditing}
-                  >
-                    <option>Intern</option>
-                    <option>Junior</option>
-                    <option>Mid-Level</option>
-                    <option>Senior</option>
-                    <option>Specialist</option>
-                    <option>Consultant</option>
-                  </select>
-                </div>
-                <div className="info-item">
-                  <label className="input-label">Specialty:</label>
-                  <select
-                    value={doctorData.specialty}
-                    onChange={(e) => handleChange("specialty", e.target.value)}
-                    className="input-field"
-                    disabled={!isEditing}
-                  >
-                    <option>Triage Doctor</option>
-                    <option>Internal Medicine</option>
-                    <option>G. Surgery</option>
-                    <option>Cardiology</option>
-                    <option>Neurology</option>
-                  </select>
-                </div>
               </div>
+               <div className='action-buttons-group'>
+                  <div className='save-edit-buttons'>
+                    <button
+                      className='btn-save'
+                      onClick={handleSave}
+                      disabled={!isEditing}
+                    >
+                      Save
+                    </button>
+                    <button
+                      className='btn-edit'
+                      onClick={() => setIsEditing(!isEditing)}
+                    >
+                      {isEditing ? "Cancel Edit" : "Edit Profile"}
+                    </button>
+                  </div>
+                </div>
             </div>
-            <div className="action-buttons-group">
-              <button
-                className="btn-save"
-                onClick={handleSave}
-                disabled={!isEditing}
-              >
-                Save
-              </button>
-              <button
-                className="btn-edit"
-                onClick={handleEdit}
-                disabled={isEditing}
-              >
-                Edit Doctor
-              </button>
-              <button
-                className="btn-delete"
-                onClick={() => setIsDeleteModalOpen(true)}
-              >
-                <LuTrash2 /> Delete Doctor
-              </button>
-            </div>
+
           </div>
         </div>
+
+        
       </div>
       <DeleteModal
         isOpen={isDeleteModalOpen}
