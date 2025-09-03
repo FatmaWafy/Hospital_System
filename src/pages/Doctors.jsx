@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   LuEye,
@@ -27,16 +27,32 @@ Chart.register(
   LinearScale,
   BarElement
 );
-
 import DeleteModal from "../components/DeleteModal";
 import "./Doctors.css";
 import { Doughnut, Bar } from "react-chartjs-2";
+
+// Add this to Doctors.css or a global stylesheet
+// .sort-arrows { margin-left: 6px; font-size: 12px; }
+// .sort-arrows .arrow { opacity: 0.45; cursor: pointer; }
+// .sort-arrows .arrow.is-active { opacity: 1; font-weight: 700; }
 
 const Doctors = () => {
   const navigate = useNavigate();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [doctorToDelete, setDoctorToDelete] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedDate, setSelectedDate] = useState("");
+  const [sortDirections, setSortDirections] = useState({
+    id: "asc",
+    name: "asc",
+    specialty: "asc",
+    level: "asc",
+    loginDate: "asc",
+    loginTime: "asc",
+    status: "asc",
+  });
+  const [activeSortKey, setActiveSortKey] = useState(null);
+
   const [doctors, setDoctors] = useState(
     Array.from({ length: 50 }).map((_, i) => ({
       id: i + 1,
@@ -48,12 +64,24 @@ const Doctors = () => {
         "Neurology",
         "General Surgery",
       ][i % 5],
-      level: i % 2 === 0 ? "Junior" : "Mid-Level",
+      level: [
+        "Intern",
+        "Junior",
+        "Mid-Level",
+        "Senior",
+        "Specialist",
+        "Consultant",
+      ][i % 6],
       loginDate: "11/5/2025",
       loginTime: "12:00 AM",
       status: i % 2 === 0 ? "online" : "offline",
     }))
   );
+
+  useEffect(() => {
+    // Placeholder: fetch('/api/doctors').then(res => setDoctors(res))
+    console.log("Fetching doctors data...");
+  }, []);
 
   const donutData = {
     labels: ["Early Response", "Late Response"],
@@ -127,14 +155,93 @@ const Doctors = () => {
 
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.ceil(doctors.length / itemsPerPage);
-  const pageData = doctors
-    .filter(
+
+  const requestSort = (key) => {
+    const newDirection = sortDirections[key] === "asc" ? "desc" : "asc";
+    setSortDirections((prev) => ({ ...prev, [key]: newDirection }));
+    setActiveSortKey(key);
+  };
+
+  const getSortIndicator = (key) => {
+    if (activeSortKey !== key) return "none";
+    return sortDirections[key] === "asc" ? "ascending" : "descending";
+  };
+
+  const compareFunctions = useMemo(() => {
+    return {
+      id: (a, b) => {
+        const aVal = Number(a.id);
+        const bVal = Number(b.id);
+        return aVal - bVal;
+      },
+      name: (a, b) => a.name.localeCompare(b.name),
+      specialty: (a, b) => a.specialty.localeCompare(b.specialty),
+      level: (a, b) => {
+        const levelsOrder = [
+          "Intern",
+          "Junior",
+          "Mid-Level",
+          "Senior",
+          "Specialist",
+          "Consultant",
+        ];
+        return levelsOrder.indexOf(a.level) - levelsOrder.indexOf(b.level);
+      },
+      loginDate: (a, b) => {
+        const aDate = new Date(a.loginDate);
+        const bDate = new Date(b.loginDate);
+        return aDate.getTime() - bDate.getTime();
+      },
+      loginTime: (a, b) => {
+        const parseTime = (time) => {
+          const [timePart, ampm] = time.split(" ");
+          let [hours, minutes] = timePart.split(":").map(Number);
+          if (ampm === "PM" && hours !== 12) hours += 12;
+          if (ampm === "AM" && hours === 12) hours = 0;
+          return hours * 60 + minutes;
+        };
+        return parseTime(a.loginTime) - parseTime(b.loginTime);
+      },
+      status: (a, b) => {
+        const aVal = a.status === "online" ? 0 : 1;
+        const bVal = b.status === "online" ? 0 : 1;
+        return aVal - bVal;
+      },
+    };
+  }, []);
+
+  const filteredDoctors = useMemo(() => {
+    return doctors.filter(
       (doctor) =>
-        doctor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        doctor.specialty.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-    .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+        (doctor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          doctor.specialty.toLowerCase().includes(searchTerm.toLowerCase())) &&
+        (selectedDate ? doctor.loginDate === selectedDate : true)
+    );
+  }, [doctors, searchTerm, selectedDate]);
+
+  const sortedDoctors = useMemo(() => {
+    if (!activeSortKey) {
+      return filteredDoctors;
+    }
+
+    const direction = sortDirections[activeSortKey];
+    const compare = compareFunctions[activeSortKey];
+
+    return [...filteredDoctors].sort((a, b) => {
+      let comparison = compare(a, b);
+      if (direction === "desc") {
+        comparison *= -1;
+      }
+      return comparison;
+    });
+  }, [filteredDoctors, activeSortKey, sortDirections, compareFunctions]);
+
+  const totalPages = Math.ceil(sortedDoctors.length / itemsPerPage);
+  const pageData = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    return sortedDoctors.slice(start, end);
+  }, [sortedDoctors, currentPage]);
 
   const handlePrev = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
@@ -253,6 +360,12 @@ const Doctors = () => {
             <h2 className="section-title">DOCTORS LIST</h2>
             <div className="list-actions">
               <input
+                type="date"
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                className="date-picker"
+              />
+              <input
                 type="text"
                 placeholder="Search..."
                 value={searchTerm}
@@ -268,13 +381,215 @@ const Doctors = () => {
           <table className="doctors-table printable-table">
             <thead>
               <tr>
-                <th>No</th>
-                <th>Dr-Name</th>
-                <th>Specialty</th>
-                <th>Level</th>
-                <th>Login Date</th>
-                <th>Login Time</th>
-                <th>Status</th>
+                <th>
+                  <button
+                    className="sort-header-btn"
+                    onClick={() => requestSort("id")}
+                    aria-sort={getSortIndicator("id")}
+                    tabIndex={0}
+                  >
+                    No
+                    <span className="sort-arrows">
+                      <span
+                        className={`arrow ${activeSortKey === "id" && sortDirections.id === "asc"
+                            ? "is-active"
+                            : ""
+                          }`}
+                      >
+                        ▲
+                      </span>
+                      <span
+                        className={`arrow ${activeSortKey === "id" &&
+                            sortDirections.id === "desc"
+                            ? "is-active"
+                            : ""
+                          }`}
+                      >
+                        ▼
+                      </span>
+                    </span>
+                  </button>
+                </th>
+                <th>
+                  <button
+                    className="sort-header-btn"
+                    onClick={() => requestSort("name")}
+                    aria-sort={getSortIndicator("name")}
+                    tabIndex={0}
+                  >
+                    Dr-Name
+                    <span className="sort-arrows">
+                      <span
+                        className={`arrow ${activeSortKey === "name" &&
+                            sortDirections.name === "asc"
+                            ? "is-active"
+                            : ""
+                          }`}
+                      >
+                        ▲
+                      </span>
+                      <span
+                        className={`arrow ${activeSortKey === "name" &&
+                            sortDirections.name === "desc"
+                            ? "is-active"
+                            : ""
+                          }`}
+                      >
+                        ▼
+                      </span>
+                    </span>
+                  </button>
+                </th>
+                <th>
+                  <button
+                    className="sort-header-btn"
+                    onClick={() => requestSort("specialty")}
+                    aria-sort={getSortIndicator("specialty")}
+                    tabIndex={0}
+                  >
+                    Specialty
+                    <span className="sort-arrows">
+                      <span
+                        className={`arrow ${activeSortKey === "specialty" &&
+                            sortDirections.specialty === "asc"
+                            ? "is-active"
+                            : ""
+                          }`}
+                      >
+                        ▲
+                      </span>
+                      <span
+                        className={`arrow ${activeSortKey === "specialty" &&
+                            sortDirections.specialty === "desc"
+                            ? "is-active"
+                            : ""
+                          }`}
+                      >
+                        ▼
+                      </span>
+                    </span>
+                  </button>
+                </th>
+                <th>
+                  <button
+                    className="sort-header-btn"
+                    onClick={() => requestSort("level")}
+                    aria-sort={getSortIndicator("level")}
+                    tabIndex={0}
+                  >
+                    Level
+                    <span className="sort-arrows">
+                      <span
+                        className={`arrow ${activeSortKey === "level" &&
+                            sortDirections.level === "asc"
+                            ? "is-active"
+                            : ""
+                          }`}
+                      >
+                        ▲
+                      </span>
+                      <span
+                        className={`arrow ${activeSortKey === "level" &&
+                            sortDirections.level === "desc"
+                            ? "is-active"
+                            : ""
+                          }`}
+                      >
+                        ▼
+                      </span>
+                    </span>
+                  </button>
+                </th>
+                <th>
+                  <button
+                    className="sort-header-btn"
+                    onClick={() => requestSort("loginDate")}
+                    aria-sort={getSortIndicator("loginDate")}
+                    tabIndex={0}
+                  >
+                    Login Date
+                    <span className="sort-arrows">
+                      <span
+                        className={`arrow ${activeSortKey === "loginDate" &&
+                            sortDirections.loginDate === "asc"
+                            ? "is-active"
+                            : ""
+                          }`}
+                      >
+                        ▲
+                      </span>
+                      <span
+                        className={`arrow ${activeSortKey === "loginDate" &&
+                            sortDirections.loginDate === "desc"
+                            ? "is-active"
+                            : ""
+                          }`}
+                      >
+                        ▼
+                      </span>
+                    </span>
+                  </button>
+                </th>
+                <th>
+                  <button
+                    className="sort-header-btn"
+                    onClick={() => requestSort("loginTime")}
+                    aria-sort={getSortIndicator("loginTime")}
+                    tabIndex={0}
+                  >
+                    Login Time
+                    <span className="sort-arrows">
+                      <span
+                        className={`arrow ${activeSortKey === "loginTime" &&
+                            sortDirections.loginTime === "asc"
+                            ? "is-active"
+                            : ""
+                          }`}
+                      >
+                        ▲
+                      </span>
+                      <span
+                        className={`arrow ${activeSortKey === "loginTime" &&
+                            sortDirections.loginTime === "desc"
+                            ? "is-active"
+                            : ""
+                          }`}
+                      >
+                        ▼
+                      </span>
+                    </span>
+                  </button>
+                </th>
+                <th>
+                  <button
+                    className="sort-header-btn"
+                    onClick={() => requestSort("status")}
+                    aria-sort={getSortIndicator("status")}
+                    tabIndex={0}
+                  >
+                    Status
+                    <span className="sort-arrows">
+                      <span
+                        className={`arrow ${activeSortKey === "status" &&
+                            sortDirections.status === "asc"
+                            ? "is-active"
+                            : ""
+                          }`}
+                      >
+                        ▲
+                      </span>
+                      <span
+                        className={`arrow ${activeSortKey === "status" &&
+                            sortDirections.status === "desc"
+                            ? "is-active"
+                            : ""
+                          }`}
+                      >
+                        ▼
+                      </span>
+                    </span>
+                  </button>
+                </th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -289,9 +604,8 @@ const Doctors = () => {
                   <td>{doctor.loginTime}</td>
                   <td>
                     <span
-                      className={`status-badge ${
-                        doctor.status === "online" ? "online" : "offline"
-                      }`}
+                      className={`status-badge ${doctor.status === "online" ? "online" : "offline"
+                        }`}
                     >
                       {doctor.status}
                     </span>
@@ -326,9 +640,8 @@ const Doctors = () => {
           {Array.from({ length: totalPages }).map((_, i) => (
             <button
               key={i + 1}
-              className={`pagination-page ${
-                currentPage === i + 1 ? "active" : ""
-              }`}
+              className={`pagination-page ${currentPage === i + 1 ? "active" : ""
+                }`}
               onClick={() => setCurrentPage(i + 1)}
             >
               {i + 1}
