@@ -85,7 +85,7 @@
 
 .profile-section {
   display: flex;
-   
+
   gap: 24px;
 }
 
@@ -101,14 +101,9 @@
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 24px;
-  margin-left: -200px;
-}
-.personal-info-stack-details {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 24px;
   margin-left: 30px;
 }
+
 .info-item {
   display: flex;
   flex-direction: column;
@@ -275,7 +270,7 @@
   background: #0c3b54;
   color: #f1f6f9;
 }
- 
+
 .table-responsive {
   overflow-x: auto;
   width: 100%;
@@ -350,7 +345,7 @@
   transform: translateY(-50%);
   color: #0d425d96;
 }
- 
+
 .search-input {
   height: 15px;
   padding: 8px 15px;
@@ -360,7 +355,6 @@
   background: #e1ebf3;
   color: #9fc0d8 !important;
   border: none;
-  
 }
 .search-input:focus {
   outline: none;
@@ -419,8 +413,8 @@
 
 .action-buttons-group {
   display: flex;
-  justify-content: flex-end;   
-  gap: 12px;  
+  justify-content: flex-end;
+  gap: 12px;
   margin-top: 16px;
 }
 
@@ -467,7 +461,7 @@
 .btn-send:hover {
   background-color: #0a3549;
 }
- /* Status Toggle Group */
+/* Status Toggle Group */
 .status-toggle-group {
   display: flex;
   gap: 16px;
@@ -502,4 +496,16 @@
 .status-toggle-btn:disabled {
   cursor: not-allowed;
   opacity: 0.6;
+}
+.sort-arrows {
+  margin-left: 6px;
+  font-size: 11px;
+}
+.sort-arrows .arrow {
+  opacity: 0.45;
+  cursor: pointer;
+}
+.sort-arrows .arrow.is-active {
+  opacity: 1;
+  font-weight: 700;
 }

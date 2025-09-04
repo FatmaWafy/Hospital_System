@@ -1,13 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { LuEye, LuTrash2, LuSearch, LuPrinter, LuChevronLeft, LuChevronRight } from "react-icons/lu"
 import DeleteModal from "./DeleteModal"
 import ViewModal from "./ViewModal"
 import "./FeedbackTab.css"
 
 const FeedbackTab = () => {
-  // Mock data - ready for backend integration
   const [feedbacks, setFeedbacks] = useState([
     {
       id: 1,
@@ -172,29 +171,22 @@ const FeedbackTab = () => {
   ])
 
   const [searchTerm, setSearchTerm] = useState("")
+  const [selectedDate, setSelectedDate] = useState("");
   const [isViewModalOpen, setIsViewModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [selectedFeedback, setSelectedFeedback] = useState(null)
   const [feedbackToDelete, setFeedbackToDelete] = useState(null)
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-
-
-  // Filter feedbacks based on search term
-  const filteredFeedbacks = feedbacks.filter(
-    (feedback) =>
-      feedback.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      feedback.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      feedback.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      feedback.message.toLowerCase().includes(searchTerm.toLowerCase()),
-  )
-
-  const feedbackTotalPages = Math.ceil(filteredFeedbacks.length / itemsPerPage);
-
-  const feedbackPageData = filteredFeedbacks.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  const [sortDirections, setSortDirections] = useState({
+    id: "asc",
+    firstName: "asc",
+    lastName: "asc",
+    email: "asc",
+    date: "asc",
+    message: "asc",
+  });
+  const [activeSortKey, setActiveSortKey] = useState(null);
 
   const handlePrevPage = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
@@ -204,6 +196,69 @@ const FeedbackTab = () => {
     if (currentPage < feedbackTotalPages) setCurrentPage(currentPage + 1);
   };
 
+  const requestSort = (key) => {
+    const newDirection = sortDirections[key] === "asc" ? "desc" : "asc";
+    setSortDirections((prev) => ({ ...prev, [key]: newDirection }));
+    setActiveSortKey(key);
+  };
+
+  const getSortIndicator = (key) => {
+    if (activeSortKey !== key) return "none";
+    return sortDirections[key] === "asc" ? "ascending" : "descending";
+  };
+
+  const compareFunctions = useMemo(() => {
+    return {
+      id: (a, b) => Number(a.id) - Number(b.id),
+      firstName: (a, b) => a.firstName.localeCompare(b.firstName),
+      lastName: (a, b) => a.lastName.localeCompare(b.lastName),
+      email: (a, b) => a.email.localeCompare(b.email),
+      date: (a, b) => {
+        const parseDate = (dateStr) => {
+          const [month, day, year] = dateStr.split("/").map(Number);
+          return new Date(year, month - 1, day);
+        };
+        return parseDate(a.date).getTime() - parseDate(b.date).getTime();
+      },
+      message: (a, b) => a.message.localeCompare(b.message),
+    };
+  }, []);
+
+  const filteredFeedbacks = useMemo(() => {
+    return feedbacks.filter(
+      (feedback) =>
+        (feedback.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          feedback.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          feedback.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          feedback.message.toLowerCase().includes(searchTerm.toLowerCase())) &&
+        (selectedDate ? new Date(feedback.date).toLocaleDateString("en-CA") === selectedDate : true)
+    );
+  }, [feedbacks, searchTerm, selectedDate]);
+
+  const sortedFeedbacks = useMemo(() => {
+    if (!activeSortKey) {
+      return filteredFeedbacks;
+    }
+
+    const direction = sortDirections[activeSortKey];
+    const compare = compareFunctions[activeSortKey];
+
+    return [...filteredFeedbacks].sort((a, b) => {
+      let comparison = compare(a, b);
+      if (direction === "desc") {
+        comparison *= -1;
+      }
+      return comparison;
+    });
+  }, [filteredFeedbacks, activeSortKey, sortDirections, compareFunctions]);
+
+  const feedbackTotalPages = Math.ceil(sortedFeedbacks.length / itemsPerPage);
+
+  const feedbackPageData = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    return sortedFeedbacks.slice(start, end);
+  }, [sortedFeedbacks, currentPage]);
 
   const handleViewFeedback = (feedback) => {
     setSelectedFeedback(feedback)
@@ -234,6 +289,12 @@ const FeedbackTab = () => {
           <h2 className='profile-title'>FEED BACKS LIST</h2>
           <div className='list-actions'>
             <input
+              type='date'
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              className='date-picker'
+            />
+            <input
               type='text'
               placeholder='Search...'
               value={searchTerm}
@@ -250,19 +311,193 @@ const FeedbackTab = () => {
         <table className="feedback-table printable-table">
           <thead>
             <tr>
-              <th>No</th>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Email</th>
-              <th>Date</th>
-              <th>Message</th>
+              <th>
+                <button
+                  className="sort-header-btn"
+                  onClick={() => requestSort("id")}
+                  aria-sort={getSortIndicator("id")}
+                  tabIndex={0}
+                >
+                  No
+                  <span className="sort-arrows">
+                    <span
+                      className={`arrow ${
+                        activeSortKey === "id" && sortDirections.id === "asc"
+                          ? "is-active"
+                          : ""
+                      }`}
+                    >
+                      ▲
+                    </span>
+                    <span
+                      className={`arrow ${
+                        activeSortKey === "id" && sortDirections.id === "desc"
+                          ? "is-active"
+                          : ""
+                      }`}
+                    >
+                      ▼
+                    </span>
+                  </span>
+                </button>
+              </th>
+              <th>
+                <button
+                  className="sort-header-btn"
+                  onClick={() => requestSort("firstName")}
+                  aria-sort={getSortIndicator("firstName")}
+                  tabIndex={0}
+                >
+                  First Name
+                  <span className="sort-arrows">
+                    <span
+                      className={`arrow ${
+                        activeSortKey === "firstName" && sortDirections.firstName === "asc"
+                          ? "is-active"
+                          : ""
+                      }`}
+                    >
+                      ▲
+                    </span>
+                    <span
+                      className={`arrow ${
+                        activeSortKey === "firstName" && sortDirections.firstName === "desc"
+                          ? "is-active"
+                          : ""
+                      }`}
+                    >
+                      ▼
+                    </span>
+                  </span>
+                </button>
+              </th>
+              <th>
+                <button
+                  className="sort-header-btn"
+                  onClick={() => requestSort("lastName")}
+                  aria-sort={getSortIndicator("lastName")}
+                  tabIndex={0}
+                >
+                  Last Name
+                  <span className="sort-arrows">
+                    <span
+                      className={`arrow ${
+                        activeSortKey === "lastName" && sortDirections.lastName === "asc"
+                          ? "is-active"
+                          : ""
+                      }`}
+                    >
+                      ▲
+                    </span>
+                    <span
+                      className={`arrow ${
+                        activeSortKey === "lastName" && sortDirections.lastName === "desc"
+                          ? "is-active"
+                          : ""
+                      }`}
+                    >
+                      ▼
+                    </span>
+                  </span>
+                </button>
+              </th>
+              <th>
+                <button
+                  className="sort-header-btn"
+                  onClick={() => requestSort("email")}
+                  aria-sort={getSortIndicator("email")}
+                  tabIndex={0}
+                >
+                  Email
+                  <span className="sort-arrows">
+                    <span
+                      className={`arrow ${
+                        activeSortKey === "email" && sortDirections.email === "asc"
+                          ? "is-active"
+                          : ""
+                      }`}
+                    >
+                      ▲
+                    </span>
+                    <span
+                      className={`arrow ${
+                        activeSortKey === "email" && sortDirections.email === "desc"
+                          ? "is-active"
+                          : ""
+                      }`}
+                    >
+                      ▼
+                    </span>
+                  </span>
+                </button>
+              </th>
+              <th>
+                <button
+                  className="sort-header-btn"
+                  onClick={() => requestSort("date")}
+                  aria-sort={getSortIndicator("date")}
+                  tabIndex={0}
+                >
+                  Date
+                  <span className="sort-arrows">
+                    <span
+                      className={`arrow ${
+                        activeSortKey === "date" && sortDirections.date === "asc"
+                          ? "is-active"
+                          : ""
+                      }`}
+                    >
+                      ▲
+                    </span>
+                    <span
+                      className={`arrow ${
+                        activeSortKey === "date" && sortDirections.date === "desc"
+                          ? "is-active"
+                          : ""
+                      }`}
+                    >
+                      ▼
+                    </span>
+                  </span>
+                </button>
+              </th>
+              <th>
+                <button
+                  className="sort-header-btn"
+                  onClick={() => requestSort("message")}
+                  aria-sort={getSortIndicator("message")}
+                  tabIndex={0}
+                >
+                  Message
+                  <span className="sort-arrows">
+                    <span
+                      className={`arrow ${
+                        activeSortKey === "message" && sortDirections.message === "asc"
+                          ? "is-active"
+                          : ""
+                      }`}
+                    >
+                      ▲
+                    </span>
+                    <span
+                      className={`arrow ${
+                        activeSortKey === "message" && sortDirections.message === "desc"
+                          ? "is-active"
+                          : ""
+                      }`}
+                    >
+                      ▼
+                    </span>
+                  </span>
+                </button>
+              </th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {feedbackPageData.map((feedback, index) => (
+            {feedbackPageData.map((feedback) => (
               <tr key={feedback.id}>
-                <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
+                <td>{feedback.id}</td>
                 <td>{feedback.firstName}</td>
                 <td>{feedback.lastName}</td>
                 <td>{feedback.email}</td>

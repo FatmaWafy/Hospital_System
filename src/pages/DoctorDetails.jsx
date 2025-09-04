@@ -3,10 +3,13 @@ import { useParams, useNavigate } from "react-router-dom";
 import "./DoctorDetails.css";
 import DeclineModal from "../components/DeclineModal";
 import ChangeDoctorModal from "../components/ChangeDoctorModal"; // <--- تم إضافة استيراد المودال
+import DeleteModal from "../components/DeleteModal";
 
 const DoctorDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [doctorToDelete, setDoctorToDelete] = useState(null);
 
   const [doctorData, setDoctorData] = useState({
     name: "Omar Essam",
@@ -109,12 +112,17 @@ const DoctorDetails = () => {
     setIsEditing(false);
   };
 
-  const handleDelete = () => {
-    if (window.confirm("Are you sure you want to delete this doctor?")) {
-      console.log("Deleting doctor with ID:", id);
-      navigate("/doctors");
-    }
+  const handleDeleteClick = (doctor) => {
+    setDoctorToDelete(doctor);
+    setIsDeleteModalOpen(true);
   };
+
+const handleDeleteDoctor = () => {
+  setIsDeleteModalOpen(false);
+  setDoctorToDelete(null);
+  // Optionally: call API or notify parent to remove doctor
+  navigate("/doctors");
+};
 
   const handleInputChange = (field, value) => {
     setDoctorData((prev) => ({ ...prev, [field]: value }));
@@ -321,7 +329,7 @@ const DoctorDetails = () => {
                   </button>
                 </div>
                 <div className="delete-button">
-                  <button className="btn-delete" onClick={handleDelete}>
+                  <button className="btn-delete" onClick={() => handleDeleteClick(doctorData)}>
                     Delete Doctor
                   </button>
                 </div>
@@ -429,6 +437,15 @@ const DoctorDetails = () => {
         onConfirm={handleConfirmChangeDoctor}
         // يمكن تمرير معلومات الطبيب هنا إذا لزم الأمر
         currentDoctor={{ id: doctorData.id, name: doctorData.name }}
+      />
+      <DeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => {
+          setIsDeleteModalOpen(false);
+          setDoctorToDelete(null);
+        }}
+        onConfirm={handleDeleteDoctor}
+        itemType="doctor"
       />
     </div>
   );

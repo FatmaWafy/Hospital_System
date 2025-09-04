@@ -6,14 +6,14 @@ import "./PatientDetails.css";
 import DeclineModal from "../components/DeclineModal";
 import ChangeDoctorModal from "../components/ChangeDoctorModal";
 import ChangePatientStatusModal from "../components/ChangePatientStatusModal";
-
+import DeleteModal from "../components/DeleteModal";
 const PatientDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const selectedStatus = queryParams.get("status");
-
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isGenderOpen, setIsGenderOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("basic");
@@ -112,11 +112,10 @@ const PatientDetails = () => {
     setIsEditing(false);
   };
 
-  const handleDelete = () => {
-    if (window.confirm("Are you sure you want to delete this patient?")) {
-      console.log("Deleting patient with ID:", id);
-      navigate("/patients");
-    }
+  const handleDeletePatient = () => {
+    setIsDeleteModalOpen(false);
+    // Optionally: call API or notify parent to remove patient
+    navigate("/patients");
   };
 
   const handleInputChange = (field, value) => {
@@ -334,7 +333,7 @@ const PatientDetails = () => {
                   </button>
                 </div>
                 <div className='delete-button'>
-                  <button className='btn-delete' onClick={handleDelete}>
+                  <button className='btn-delete' onClick={() => setIsDeleteModalOpen(true)}>
                     Delete Patient
                   </button>
                 </div>
@@ -464,7 +463,12 @@ const PatientDetails = () => {
         }}
         currentStatus={selectedEvent?.status || "N/A"}
       />
-
+      <DeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleDeletePatient}
+        itemType="patient"
+      />
     </div>
   );
 };

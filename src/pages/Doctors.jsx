@@ -31,10 +31,7 @@ import DeleteModal from "../components/DeleteModal";
 import "./Doctors.css";
 import { Doughnut, Bar } from "react-chartjs-2";
 
-// Add this to Doctors.css or a global stylesheet
-// .sort-arrows { margin-left: 6px; font-size: 12px; }
-// .sort-arrows .arrow { opacity: 0.45; cursor: pointer; }
-// .sort-arrows .arrow.is-active { opacity: 1; font-weight: 700; }
+
 
 const Doctors = () => {
   const navigate = useNavigate();

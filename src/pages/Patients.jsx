@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import "./Patients.css";
 import { PieChart, Pie, Cell } from "recharts";
 import { Link, useNavigate } from "react-router-dom";
@@ -11,6 +11,11 @@ import {
   LuTrash2,
 } from "react-icons/lu";
 import DeleteModal from "../components/DeleteModal";
+
+// Add this to Doctors.css or a global stylesheet
+// .sort-arrows { margin-left: 6px; font-size: 12px; }
+// .sort-arrows .arrow { opacity: 0.45; cursor: pointer; }
+// .sort-arrows .arrow.is-active { opacity: 1; font-weight: 700; }
 
 const Patients = () => {
   const navigate = useNavigate();
@@ -31,24 +36,105 @@ const Patients = () => {
       name: `Patient ${i + 1}`,
       doctor: `Dr. Smith`,
       date: "2025-05-20",
-      time: "12:30 PM",
+      time: ["10:00 AM", "12:30 PM", "08:15 AM", "03:45 PM"][i % 4],
       complaint: "Chest Pain",
       status: ["urgent", "critical", "cold", "moderate"][i % 4],
     }))
   );
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedDate, setSelectedDate] = useState("");
+  const [sortDirections, setSortDirections] = useState({
+    no: "asc",
+    name: "asc",
+    doctor: "asc",
+    date: "asc",
+    time: "asc",
+    complaint: "asc",
+    status: "asc",
+  });
+  const [activeSortKey, setActiveSortKey] = useState(null);
+
   const itemsPerPage = 15;
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.ceil(patients.length / itemsPerPage);
-  const [searchTerm, setSearchTerm] = useState("");
-  const pageData = patients
-    .filter((patient) =>
-      patient.name.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-    .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [patientToDelete, setPatientToDelete] = useState(null);
+
+  const requestSort = (key) => {
+    const newDirection = sortDirections[key] === "asc" ? "desc" : "asc";
+    setSortDirections((prev) => ({ ...prev, [key]: newDirection }));
+    setActiveSortKey(key);
+  };
+
+  const getSortIndicator = (key) => {
+    if (activeSortKey !== key) return "none";
+    return sortDirections[key] === "asc" ? "ascending" : "descending";
+  };
+
+  const compareFunctions = useMemo(() => {
+    return {
+      no: (a, b) => Number(a.no) - Number(b.no),
+      name: (a, b) => a.name.localeCompare(b.name),
+      doctor: (a, b) => a.doctor.localeCompare(b.doctor),
+      date: (a, b) => {
+        const aDate = new Date(a.date);
+        const bDate = new Date(b.date);
+        return aDate.getTime() - bDate.getTime();
+      },
+      time: (a, b) => {
+        const parseTime = (time) => {
+          const [timePart, ampm] = time.split(" ");
+          let [hours, minutes] = timePart.split(":").map(Number);
+          if (ampm === "PM" && hours !== 12) hours += 12;
+          if (ampm === "AM" && hours === 12) hours = 0;
+          return hours * 60 + minutes;
+        };
+        return parseTime(a.time) - parseTime(b.time);
+      },
+      status: (a, b) => {
+        const statusOrder = ["critical", "urgent", "moderate", "cold"];
+        return statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status);
+      },
+      complaint: (a, b) => a.complaint.localeCompare(b.complaint),
+    };
+  }, []);
+
+  const filteredPatients = useMemo(() => {
+    return patients.filter(
+      (patient) =>
+        (patient.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          patient.doctor.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          patient.complaint
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase())) &&
+        (selectedDate ? patient.date === selectedDate : true)
+    );
+  }, [patients, searchTerm, selectedDate]);
+
+  const sortedPatients = useMemo(() => {
+    if (!activeSortKey) {
+      return filteredPatients;
+    }
+
+    const direction = sortDirections[activeSortKey];
+    const compare = compareFunctions[activeSortKey];
+
+    return [...filteredPatients].sort((a, b) => {
+      let comparison = compare(a, b);
+      if (direction === "desc") {
+        comparison *= -1;
+      }
+      return comparison;
+    });
+  }, [filteredPatients, activeSortKey, sortDirections, compareFunctions]);
+
+  const totalPages = Math.ceil(sortedPatients.length / itemsPerPage);
+  const pageData = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    return sortedPatients.slice(start, end);
+  }, [sortedPatients, currentPage]);
 
   const handlePrev = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
@@ -81,43 +167,43 @@ const Patients = () => {
   };
 
   return (
-    <div className='patients-page'>
+    <div className="patients-page">
       {/* SECTION 1 */}
-      <div className='patients-header'>
-        <h1>Emergency Room Doctors</h1>
-        <a href='/notifications'>
+      <div className="patients-header">
+        <h1>Emergency Room Patients</h1>
+        <a href="/notifications">
           <img
-            src='/notifications.svg'
-            alt='Notifications'
-            className='notification-icon'
+            src="/notifications.svg"
+            alt="Notifications"
+            className="notification-icon"
           />
         </a>
       </div>
 
       {/* SECTION 2 */}
-      <div className='patients-welcome'>
-        <div className='welcome-text'>
+      <div className="patients-welcome">
+        <div className="welcome-text">
           <h2>Good morning, ER Admin</h2>
           <p>
             Here is what’s happening with ER Department from May 19 - May 25.
           </p>
         </div>
-        <button className='date-range-btn'>
+        <button className="date-range-btn">
           <span>May 19 - May 25</span>
-          <img src='/calendar.svg' alt='Calendar' className='calendar-icon' />
+          <img src="/calendar.svg" alt="Calendar" className="calendar-icon" />
         </button>
       </div>
 
       {/* SECTION 3 */}
-      <div className='patients-section-two'>
-        <div className='patients-status-box'>
+      <div className="patients-section-two">
+        <div className="patients-status-box">
           <h3>Patients Status</h3>
-          <div className='chart-center'>
+          <div className="chart-center">
             <PieChart width={280} height={200}>
               <Pie
                 data={patientStatusData}
-                dataKey='value'
-                nameKey='name'
+                dataKey="value"
+                nameKey="name"
                 innerRadius={70}
                 outerRadius={100}
               >
@@ -127,61 +213,269 @@ const Patients = () => {
               </Pie>
             </PieChart>
           </div>
-          <div className='chart-description-row'>
+          <div className="chart-description-row">
             {patientStatusData.map((item) => (
-              <div className='desc-item' key={item.name}>
+              <div className="desc-item" key={item.name}>
                 <div
-                  className='color-square'
+                  className="color-square"
                   style={{ backgroundColor: item.color }}
                 ></div>
                 <span>{`${item.value}% ${item.name}`}</span>
               </div>
             ))}
           </div>
-          <div className='view-all-wrapper'>
-            <button className='view-all-btn'>
+          <div className="view-all-wrapper">
+            <button className="view-all-btn">
               View All Patients
-              <img src='/arrow-right.svg' alt='Arrow Right' />
+              <img src="/arrow-right.svg" alt="Arrow Right" />
             </button>
           </div>
         </div>
 
-        <div className='stats-box patients-total-cases'>
-          <span className='box-labelH'>Total Cases</span>
-          <span className='box-valueH'>{statsData.totalCases}</span>
-          <img src='/1.svg' alt='icon' className='stats-iconH' />
+        <div className="stats-box patients-total-cases">
+          <span className="box-labelH">Total Cases</span>
+          <span className="box-valueH">{statsData.totalCases}</span>
+          <img src="/1.svg" alt="icon" className="stats-iconH" />
         </div>
       </div>
 
       {/* SECTION 4 */}
-      <div className='patients-table-section'>
-        <div className='table-responsive'>
-          <div className='list-header'>
-            <h2 className='section-title'>PATIENTS LIST</h2>
-            <div className='list-actions'>
+      <div className="patients-table-section">
+        <div className="table-responsive">
+          <div className="list-header">
+            <h2 className="section-title">PATIENTS LIST</h2>
+            <div className="list-actions">
               <input
-                type='text'
-                placeholder='Search...'
+                type="date"
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                className="date-picker"
+              />
+              <input
+                type="text"
+                placeholder="Search..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className='search-input'
+                className="search-input"
               />
-              <LuSearch size={15} className='search-icon' />
-              <button className='print-btn' onClick={handlePrint}>
+              <LuSearch size={15} className="search-icon" />
+              <button className="print-btn" onClick={handlePrint}>
                 <LuPrinter size={20} />
               </button>
             </div>
           </div>
-          <table className='patients-table printable-table'>
+          <table className="patients-table printable-table">
             <thead>
               <tr>
-                <th>No</th>
-                <th>Name</th>
-                <th>Assigned Doctors</th>
-                <th>Date of Admit</th>
-                <th>Time of Admit</th>
-                <th>Complaint</th>
-                <th>Status</th>
+                <th>
+                  <button
+                    className="sort-header-btn"
+                    onClick={() => requestSort("no")}
+                    aria-sort={getSortIndicator("no")}
+                    tabIndex={0}
+                  >
+                    No
+                    <span className="sort-arrows">
+                      <span
+                        className={`arrow ${activeSortKey === "no" && sortDirections.no === "asc"
+                            ? "is-active"
+                            : ""
+                          }`}
+                      >
+                        ▲
+                      </span>
+                      <span
+                        className={`arrow ${activeSortKey === "no" &&
+                            sortDirections.no === "desc"
+                            ? "is-active"
+                            : ""
+                          }`}
+                      >
+                        ▼
+                      </span>
+                    </span>
+                  </button>
+                </th>
+                <th>
+                  <button
+                    className="sort-header-btn"
+                    onClick={() => requestSort("name")}
+                    aria-sort={getSortIndicator("name")}
+                    tabIndex={0}
+                  >
+                    Name
+                    <span className="sort-arrows">
+                      <span
+                        className={`arrow ${activeSortKey === "name" &&
+                            sortDirections.name === "asc"
+                            ? "is-active"
+                            : ""
+                          }`}
+                      >
+                        ▲
+                      </span>
+                      <span
+                        className={`arrow ${activeSortKey === "name" &&
+                            sortDirections.name === "desc"
+                            ? "is-active"
+                            : ""
+                          }`}
+                      >
+                        ▼
+                      </span>
+                    </span>
+                  </button>
+                </th>
+                <th>
+                  <button
+                    className="sort-header-btn"
+                    onClick={() => requestSort("doctor")}
+                    aria-sort={getSortIndicator("doctor")}
+                    tabIndex={0}
+                  >
+                    Assigned Doctors
+                    <span className="sort-arrows">
+                      <span
+                        className={`arrow ${activeSortKey === "doctor" &&
+                            sortDirections.doctor === "asc"
+                            ? "is-active"
+                            : ""
+                          }`}
+                      >
+                        ▲
+                      </span>
+                      <span
+                        className={`arrow ${activeSortKey === "doctor" &&
+                            sortDirections.doctor === "desc"
+                            ? "is-active"
+                            : ""
+                          }`}
+                      >
+                        ▼
+                      </span>
+                    </span>
+                  </button>
+                </th>
+                <th>
+                  <button
+                    className="sort-header-btn"
+                    onClick={() => requestSort("date")}
+                    aria-sort={getSortIndicator("date")}
+                    tabIndex={0}
+                  >
+                    Date of Admit
+                    <span className="sort-arrows">
+                      <span
+                        className={`arrow ${activeSortKey === "date" &&
+                            sortDirections.date === "asc"
+                            ? "is-active"
+                            : ""
+                          }`}
+                      >
+                        ▲
+                      </span>
+                      <span
+                        className={`arrow ${activeSortKey === "date" &&
+                            sortDirections.date === "desc"
+                            ? "is-active"
+                            : ""
+                          }`}
+                      >
+                        ▼
+                      </span>
+                    </span>
+                  </button>
+                </th>
+                <th>
+                  <button
+                    className="sort-header-btn"
+                    onClick={() => requestSort("time")}
+                    aria-sort={getSortIndicator("time")}
+                    tabIndex={0}
+                  >
+                    Time of Admit
+                    <span className="sort-arrows">
+                      <span
+                        className={`arrow ${activeSortKey === "time" &&
+                            sortDirections.time === "asc"
+                            ? "is-active"
+                            : ""
+                          }`}
+                      >
+                        ▲
+                      </span>
+                      <span
+                        className={`arrow ${activeSortKey === "time" &&
+                            sortDirections.time === "desc"
+                            ? "is-active"
+                            : ""
+                          }`}
+                      >
+                        ▼
+                      </span>
+                    </span>
+                  </button>
+                </th>
+                <th>
+                  <button
+                    className="sort-header-btn"
+                    onClick={() => requestSort("complaint")}
+                    aria-sort={getSortIndicator("complaint")}
+                    tabIndex={0}
+                  >
+                    Complaint
+                    <span className="sort-arrows">
+                      <span
+                        className={`arrow ${activeSortKey === "complaint" &&
+                            sortDirections.complaint === "asc"
+                            ? "is-active"
+                            : ""
+                          }`}
+                      >
+                        ▲
+                      </span>
+                      <span
+                        className={`arrow ${activeSortKey === "complaint" &&
+                            sortDirections.complaint === "desc"
+                            ? "is-active"
+                            : ""
+                          }`}
+                      >
+                        ▼
+                      </span>
+                    </span>
+                  </button>
+                </th>
+                <th>
+                  <button
+                    className="sort-header-btn"
+                    onClick={() => requestSort("status")}
+                    aria-sort={getSortIndicator("status")}
+                    tabIndex={0}
+                  >
+                    Status
+                    <span className="sort-arrows">
+                      <span
+                        className={`arrow ${activeSortKey === "status" &&
+                            sortDirections.status === "asc"
+                            ? "is-active"
+                            : ""
+                          }`}
+                      >
+                        ▲
+                      </span>
+                      <span
+                        className={`arrow ${activeSortKey === "status" &&
+                            sortDirections.status === "desc"
+                            ? "is-active"
+                            : ""
+                          }`}
+                      >
+                        ▼
+                      </span>
+                    </span>
+                  </button>
+                </th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -199,15 +493,15 @@ const Patients = () => {
                       {row.status.charAt(0).toUpperCase() + row.status.slice(1)}
                     </span>
                   </td>
-                  <td className='actions-cell'>
+                  <td className="actions-cell">
                     <button
-                      className='action-btn view-btn'
+                      className="action-btn view-btn"
                       onClick={() => handleViewDetails(row.no)}
                     >
                       <LuEye size={18} />
                     </button>
                     <button
-                      className='action-btn delete-btn'
+                      className="action-btn delete-btn"
                       onClick={() => handleDeleteClick(row)}
                     >
                       <LuTrash2 size={18} />
@@ -221,9 +515,9 @@ const Patients = () => {
       </div>
 
       {/* SECTION 5 - Pagination */}
-      <div className='pagination-wrapper'>
+      <div className="pagination-wrapper">
         <button
-          className='pagination-btn'
+          className="pagination-btn"
           onClick={handlePrev}
           disabled={currentPage === 1}
         >
@@ -233,18 +527,17 @@ const Patients = () => {
         {Array.from({ length: totalPages }).map((_, i) => (
           <button
             key={i}
-            className={`pagination-page ${
-              currentPage === i + 1 ? "active" : ""
-            }`}
+            className={`pagination-page ${currentPage === i + 1 ? "active" : ""
+              }`}
             onClick={() => setCurrentPage(i + 1)}
           >
             {i + 1}
           </button>
         ))}
-        <span className='pagination-dots'>...</span>
+        <span className="pagination-dots">...</span>
 
         <button
-          className='pagination-btn'
+          className="pagination-btn"
           onClick={handleNext}
           disabled={currentPage === totalPages}
         >
@@ -259,7 +552,7 @@ const Patients = () => {
           setPatientToDelete(null);
         }}
         onConfirm={handleDeletePatient}
-        itemType='patient'
+        itemType="patient"
       />
     </div>
   );

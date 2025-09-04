@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import "./DoctorDetails.css";
 import { useNavigate } from "react-router-dom";
-import { LuPlus, LuTrash2 } from "react-icons/lu";
-import DeleteModal from "../components/DeleteModal";
+import { LuTrash2 } from "react-icons/lu";
 
 const AddDoctor = () => {
   const navigate = useNavigate();
@@ -14,10 +13,9 @@ const AddDoctor = () => {
     level: "Junior",
     specialty: "Triage Doctor",
     status: "Online",
-    photo: "/placeholder-avatar.svg",
+    photo: "/avatar.svg", // نفس الصورة الافتراضية بتاعت EditDoctor
   });
   const [newPhoto, setNewPhoto] = useState(null);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const handleChange = (field, value) => {
     setDoctorData((prev) => ({ ...prev, [field]: value }));
@@ -27,8 +25,8 @@ const AddDoctor = () => {
     const file = event.target.files[0];
     if (file) {
       setNewPhoto(file);
-      console.log(newPhoto)
-      // Placeholder: fetch('/api/upload-photo', { method: 'POST', body: file }).then(res => handleChange("photo", res.url))
+      const photoUrl = URL.createObjectURL(file); // عشان أظهر الـ preview
+      setDoctorData((prev) => ({ ...prev, photo: photoUrl }));
       console.log("Uploading photo:", file.name);
     }
   };
@@ -43,7 +41,6 @@ const AddDoctor = () => {
       .then((res) => res.json())
       .then(() => {
         console.log("Doctor added:", doctorData);
-        // Simulate table update (e.g., refresh doctors tab)
         navigate("/settings?tab=doctors");
       })
       .catch((err) => console.error("Error saving:", err));
@@ -58,18 +55,11 @@ const AddDoctor = () => {
       level: "Junior",
       specialty: "Triage Doctor",
       status: "Online",
-      photo: "/placeholder-avatar.svg",
+      photo: "/avatar.svg",
     });
     setNewPhoto(null);
   };
 
-  const handleDeleteConfirm = () => {
-    // Placeholder: Delete from backend (if adding then canceling)
-    console.log("Clearing added doctor data");
-    handleClear();
-    setIsDeleteModalOpen(false);
-    navigate("/settings?tab=doctors");
-  };
 
   const handleBack = () => {
     navigate("/settings?tab=doctors");
@@ -87,16 +77,16 @@ const AddDoctor = () => {
 
         <div className="doctor-details-card">
           <div className="tab-content">
-            <div className="info-section">
-              <h2 className="section-title">Personal Info</h2>
-              <div className="personal-info-grid">
-                <div className="photo-container">
-                  <label className="input-label">Profile Photo:</label>
-                  <img
-                    src={doctorData.photo}
-                    alt="Profile"
-                    className="profile-photo"
-                  />
+            <p className="profile-title">Personal Info</p>
+            <div className="profile-section">
+              <div className="photo-container">
+                <label className="input-label-profile">Profile Photo:</label>
+                <img
+                  src={newPhoto ? URL.createObjectURL(newPhoto) : doctorData.photo}
+                  alt="Profile"
+                  className="profile-photo"
+                />
+                <>
                   <input
                     type="file"
                     accept="image/*"
@@ -105,14 +95,20 @@ const AddDoctor = () => {
                     id="photoInput"
                   />
                   <button
-                    className="change-photo-btn"
+                    className="btn-edit-photo"
                     onClick={() => document.getElementById("photoInput").click()}
                   >
-                    <LuPlus />
+                    <img
+                      src="/f2.svg"
+                      alt="Change Photo"
+                      className="change-photo-icon"
+                    />
                   </button>
-                </div>
+                </>
+              </div>
+              <div className="personal-info-stack">
                 <div className="info-item">
-                  <label className="input-label">Name:</label>
+                  <label className="input-label-profile">Name:</label>
                   <input
                     type="text"
                     value={doctorData.name}
@@ -121,7 +117,7 @@ const AddDoctor = () => {
                   />
                 </div>
                 <div className="info-item">
-                  <label className="input-label">Email:</label>
+                  <label className="input-label-profile">Email:</label>
                   <input
                     type="email"
                     value={doctorData.email}
@@ -130,7 +126,7 @@ const AddDoctor = () => {
                   />
                 </div>
                 <div className="info-item">
-                  <label className="input-label">Password:</label>
+                  <label className="input-label-profile">Password:</label>
                   <input
                     type="password"
                     value={doctorData.password}
@@ -139,7 +135,7 @@ const AddDoctor = () => {
                   />
                 </div>
                 <div className="info-item">
-                  <label className="input-label">Phone no.:</label>
+                  <label className="input-label-profile">Phone no.:</label>
                   <input
                     type="text"
                     value={doctorData.phone}
@@ -148,7 +144,7 @@ const AddDoctor = () => {
                   />
                 </div>
                 <div className="info-item">
-                  <label className="input-label">Level:</label>
+                  <label className="input-label-profile">Level:</label>
                   <select
                     value={doctorData.level}
                     onChange={(e) => handleChange("level", e.target.value)}
@@ -163,7 +159,7 @@ const AddDoctor = () => {
                   </select>
                 </div>
                 <div className="info-item">
-                  <label className="input-label">Specialty:</label>
+                  <label className="input-label-profile">Specialty:</label>
                   <select
                     value={doctorData.specialty}
                     onChange={(e) => handleChange("specialty", e.target.value)}
@@ -179,28 +175,18 @@ const AddDoctor = () => {
               </div>
             </div>
             <div className="action-buttons-group">
-              <button className="btn-save" onClick={handleSave}>
-                Save
-              </button>
-              <button className="btn-edit" onClick={handleClear}>
-                Clear
-              </button>
-              <button
-                className="btn-delete"
-                onClick={() => setIsDeleteModalOpen(true)}
-              >
-                <LuTrash2 /> Delete Doctor
-              </button>
+              <div className="save-edit-buttons">
+                <button className="btn-save" onClick={handleSave}>
+                  Save
+                </button>
+                <button className="btn-edit" onClick={handleClear}>
+                  Clear
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <DeleteModal
-        isOpen={isDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen(false)}
-        onConfirm={handleDeleteConfirm}
-        itemType="doctor"
-      />
     </div>
   );
 };
