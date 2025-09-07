@@ -275,13 +275,7 @@ const Doctors = () => {
       {/* SECTION 1 */}
       <div className="doctors-header">
         <h1>Emergency Room Doctors</h1>
-        <a href="/notifications">
-          <img
-            src="/notifications.svg"
-            alt="Notifications"
-            className="notification-icon"
-          />
-        </a>
+         
       </div>
 
       {/* SECTION 2 */}
@@ -292,10 +286,7 @@ const Doctors = () => {
             Here is what’s happening with ER Department from May 19 - May 25.
           </p>
         </div>
-        <button className="date-range-btn">
-          <span>May 19 - May 25</span>
-          <img src="/calendar.svg" alt="Calendar" className="calendar-icon" />
-        </button>
+         
       </div>
 
       {/* SECTION 3 */}

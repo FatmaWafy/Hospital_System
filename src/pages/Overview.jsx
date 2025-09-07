@@ -94,13 +94,7 @@ const Overview = () => {
       {/* SECTION 1 */}
       <div className="overview-header">
         <h1>Overview</h1>
-        <a href="/notifications">
-          <img
-            src="/notifications.svg"
-            alt="Notifications"
-            className="notification-icon"
-          />
-        </a>
+         
       </div>
 
       {/* SECTION 2 */}
@@ -111,10 +105,7 @@ const Overview = () => {
             Here is what’s happening with ER Department from May 19 - May 25.
           </p>
         </div>
-        <button className="date-range-btn">
-          <span>May 19 - May 25</span>
-          <img src="/calendar.svg" alt="Calendar" className="calendar-icon" />
-        </button>
+        
       </div>
 
       {/* SECTION 3 */}

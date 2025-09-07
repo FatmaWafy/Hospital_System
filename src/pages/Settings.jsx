@@ -87,9 +87,7 @@ const Settings = () => {
     <div className="settings-page">
       <div className="settings-header">
         <h1>Settings</h1>
-        <a href="/notifications">
-          <img src="/notifications.svg" alt="Notifications" className="notification-icon" />
-        </a>
+        
       </div>
 
       <div className="settings-welcome">
@@ -97,10 +95,7 @@ const Settings = () => {
           <h2>Good morning, ER Admin</h2>
           <p>Here is what’s happening with ER Department from May 19 - May 25.</p>
         </div>
-        <button className="date-range-btn">
-          <span>May 19 - May 25</span>
-          <img src="/calendar.svg" alt="Calendar" className="calendar-icon" />
-        </button>
+        
       </div>
 
       <div className="tabs-container">
