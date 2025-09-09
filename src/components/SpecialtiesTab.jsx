@@ -6,16 +6,12 @@ import {
   LuSearch,
   LuChevronLeft,
   LuChevronRight,
+  LuFilter,
 } from "react-icons/lu";
 import { Link } from "react-router-dom";
 import AddSpecialtyModal from "./AddSpecialtyModal";
 import EditSpecialtyModal from "./EditSpecialtyModal";
 import DeleteModal from "./DeleteModal";
-
-// Add this to Doctors.css or a global stylesheet
-// .sort-arrows { margin-left: 6px; font-size: 12px; }
-// .sort-arrows .arrow { opacity: 0.45; cursor: pointer; }
-// .sort-arrows .arrow.is-active { opacity: 1; font-weight: 700; }
 
 const SpecialtiesTab = ({
   specialties,
@@ -43,6 +39,11 @@ const SpecialtiesTab = ({
     status: "asc",
   });
   const [activeSortKey, setActiveSortKey] = useState(null);
+
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [filterColumn, setFilterColumn] = useState(null);
+  const [filterOptions, setFilterOptions] = useState([]);
+  const [selectedFilters, setSelectedFilters] = useState({});
 
   const handleAddSpecialty = (newName, status) => {
     const newSpecialty = {
@@ -82,6 +83,26 @@ const SpecialtiesTab = ({
     return sortDirections[key] === "asc" ? "ascending" : "descending";
   };
 
+  const handleFilterClick = (key) => {
+    setFilterColumn(key);
+    const uniqueOptions = [...new Set(specialties.map((s) => s[key]))];
+    setFilterOptions(uniqueOptions);
+    setIsFilterModalOpen(true);
+  };
+
+  const handleFilterCheckboxChange = (option) => {
+    setSelectedFilters((prevFilters) => {
+      const currentFilters = prevFilters[filterColumn] || [];
+      const newFilters = currentFilters.includes(option)
+        ? currentFilters.filter((item) => item !== option)
+        : [...currentFilters, option];
+      return {
+        ...prevFilters,
+        [filterColumn]: newFilters,
+      };
+    });
+  };
+
   const compareFunctions = useMemo(() => {
     return {
       id: (a, b) => Number(a.id) - Number(b.id),
@@ -103,14 +124,23 @@ const SpecialtiesTab = ({
   }, []);
 
   const filteredSpecialties = useMemo(() => {
-    return specialties.filter(
+    let result = specialties.filter(
       (s) =>
         s.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
         (selectedDate
           ? new Date(s.date).toLocaleDateString("en-CA") === selectedDate
           : true)
     );
-  }, [specialties, searchTerm, selectedDate]);
+
+    Object.keys(selectedFilters).forEach((key) => {
+      const filters = selectedFilters[key];
+      if (filters && filters.length > 0) {
+        result = result.filter((specialty) => filters.includes(specialty[key]));
+      }
+    });
+
+    return result;
+  }, [specialties, searchTerm, selectedDate, selectedFilters]);
 
   const sortedSpecialties = useMemo(() => {
     if (!activeSortKey) {
@@ -157,7 +187,7 @@ const SpecialtiesTab = ({
           After adding a new specialty, assign doctors to it from the{" "}
           <Link
             to="/settings"
-            onClick={() => setActiveTab("doctors")}
+
             className="doctors-link"
           >
             Doctors page
@@ -200,160 +230,91 @@ const SpecialtiesTab = ({
           <thead>
             <tr>
               <th>
-                <button
-                  className="sort-header-btn"
-                  onClick={() => requestSort("id")}
-                  aria-sort={getSortIndicator("id")}
-                  tabIndex={0}
-                >
-                  No
-                  <span className="sort-arrows">
-                    <span
-                      className={`arrow ${
-                        activeSortKey === "id" && sortDirections.id === "asc"
-                          ? "is-active"
-                          : ""
-                      }`}
-                    >
-                      ▲
+                <span>No</span>
+                <div className="header-actions">
+                  <button
+                    className="sort-header-btn"
+                    onClick={() => requestSort("id")}
+                    aria-sort={getSortIndicator("id")}
+                  >
+                    <span className="sort-arrows">
+                      <span className={`arrow ${activeSortKey === "id" && sortDirections.id === "asc" ? "is-active" : ""}`}>▲</span>
+                      <span className={`arrow ${activeSortKey === "id" && sortDirections.id === "desc" ? "is-active" : ""}`}>▼</span>
                     </span>
-                    <span
-                      className={`arrow ${
-                        activeSortKey === "id" && sortDirections.id === "desc"
-                          ? "is-active"
-                          : ""
-                      }`}
-                    >
-                      ▼
-                    </span>
-                  </span>
-                </button>
+                  </button>
+                </div>
               </th>
               <th>
-                <button
-                  className="sort-header-btn"
-                  onClick={() => requestSort("name")}
-                  aria-sort={getSortIndicator("name")}
-                  tabIndex={0}
-                >
-                  Specialty
-                  <span className="sort-arrows">
-                    <span
-                      className={`arrow ${
-                        activeSortKey === "name" && sortDirections.name === "asc"
-                          ? "is-active"
-                          : ""
-                      }`}
-                    >
-                      ▲
+                <span>Specialty</span>
+                <div className="header-actions">
+                  <button
+                    className="sort-header-btn"
+                    onClick={() => requestSort("name")}
+                    aria-sort={getSortIndicator("name")}
+                  >
+                    <span className="sort-arrows">
+                      <span className={`arrow ${activeSortKey === "name" && sortDirections.name === "asc" ? "is-active" : ""}`}>▲</span>
+                      <span className={`arrow ${activeSortKey === "name" && sortDirections.name === "desc" ? "is-active" : ""}`}>▼</span>
                     </span>
-                    <span
-                      className={`arrow ${
-                        activeSortKey === "name" &&
-                        sortDirections.name === "desc"
-                          ? "is-active"
-                          : ""
-                      }`}
-                    >
-                      ▼
-                    </span>
-                  </span>
-                </button>
+                  </button>
+                  <button
+                    className="filter-header-btn"
+                    onClick={() => handleFilterClick("name")}
+                  >
+                    <LuFilter size={14} />
+                  </button>
+                </div>
               </th>
               <th>
-                <button
-                  className="sort-header-btn"
-                  onClick={() => requestSort("addedBy")}
-                  aria-sort={getSortIndicator("addedBy")}
-                  tabIndex={0}
-                >
-                  Added By
-                  <span className="sort-arrows">
-                    <span
-                      className={`arrow ${
-                        activeSortKey === "addedBy" &&
-                        sortDirections.addedBy === "asc"
-                          ? "is-active"
-                          : ""
-                      }`}
-                    >
-                      ▲
+                <span>Added By</span>
+                <div className="header-actions">
+                  <button
+                    className="sort-header-btn"
+                    onClick={() => requestSort("addedBy")}
+                    aria-sort={getSortIndicator("addedBy")}
+                  >
+                    <span className="sort-arrows">
+                      <span className={`arrow ${activeSortKey === "addedBy" && sortDirections.addedBy === "asc" ? "is-active" : ""}`}>▲</span>
+                      <span className={`arrow ${activeSortKey === "addedBy" && sortDirections.addedBy === "desc" ? "is-active" : ""}`}>▼</span>
                     </span>
-                    <span
-                      className={`arrow ${
-                        activeSortKey === "addedBy" &&
-                        sortDirections.addedBy === "desc"
-                          ? "is-active"
-                          : ""
-                      }`}
-                    >
-                      ▼
-                    </span>
-                  </span>
-                </button>
+                  </button>
+                </div>
               </th>
               <th>
-                <button
-                  className="sort-header-btn"
-                  onClick={() => requestSort("date")}
-                  aria-sort={getSortIndicator("date")}
-                  tabIndex={0}
-                >
-                  Date Added
-                  <span className="sort-arrows">
-                    <span
-                      className={`arrow ${
-                        activeSortKey === "date" && sortDirections.date === "asc"
-                          ? "is-active"
-                          : ""
-                      }`}
-                    >
-                      ▲
+                <span>Date Added</span>
+                <div className="header-actions">
+                  <button
+                    className="sort-header-btn"
+                    onClick={() => requestSort("date")}
+                    aria-sort={getSortIndicator("date")}
+                  >
+                    <span className="sort-arrows">
+                      <span className={`arrow ${activeSortKey === "date" && sortDirections.date === "asc" ? "is-active" : ""}`}>▲</span>
+                      <span className={`arrow ${activeSortKey === "date" && sortDirections.date === "desc" ? "is-active" : ""}`}>▼</span>
                     </span>
-                    <span
-                      className={`arrow ${
-                        activeSortKey === "date" &&
-                        sortDirections.date === "desc"
-                          ? "is-active"
-                          : ""
-                      }`}
-                    >
-                      ▼
-                    </span>
-                  </span>
-                </button>
+                  </button>
+                </div>
               </th>
               <th>
-                <button
-                  className="sort-header-btn"
-                  onClick={() => requestSort("status")}
-                  aria-sort={getSortIndicator("status")}
-                  tabIndex={0}
-                >
-                  Status
-                  <span className="sort-arrows">
-                    <span
-                      className={`arrow ${
-                        activeSortKey === "status" &&
-                        sortDirections.status === "asc"
-                          ? "is-active"
-                          : ""
-                      }`}
-                    >
-                      ▲
+                <span>Status</span>
+                <div className="header-actions">
+                  <button
+                    className="sort-header-btn"
+                    onClick={() => requestSort("status")}
+                    aria-sort={getSortIndicator("status")}
+                  >
+                    <span className="sort-arrows">
+                      <span className={`arrow ${activeSortKey === "status" && sortDirections.status === "asc" ? "is-active" : ""}`}>▲</span>
+                      <span className={`arrow ${activeSortKey === "status" && sortDirections.status === "desc" ? "is-active" : ""}`}>▼</span>
                     </span>
-                    <span
-                      className={`arrow ${
-                        activeSortKey === "status" &&
-                        sortDirections.status === "desc"
-                          ? "is-active"
-                          : ""
-                      }`}
-                    >
-                      ▼
-                    </span>
-                  </span>
-                </button>
+                  </button>
+                  <button
+                    className="filter-header-btn"
+                    onClick={() => handleFilterClick("status")}
+                  >
+                    <LuFilter size={14} />
+                  </button>
+                </div>
               </th>
               <th>Actions</th>
             </tr>
@@ -367,9 +328,8 @@ const SpecialtiesTab = ({
                 <td>{s.date}</td>
                 <td>
                   <span
-                    className={`status-badge ${
-                      s.status === "Enabled" ? "online" : "offline"
-                    }`}
+                    className={`status-badge ${s.status === "Enabled" ? "online" : "offline"
+                      }`}
                   >
                     {s.status}
                   </span>
@@ -410,9 +370,8 @@ const SpecialtiesTab = ({
           {Array.from({ length: specialtyTotalPages }).map((_, i) => (
             <button
               key={i + 1}
-              className={`pagination-page ${
-                currentPage === i + 1 ? "active" : ""
-              }`}
+              className={`pagination-page ${currentPage === i + 1 ? "active" : ""
+                }`}
               onClick={() => setCurrentPage(i + 1)}
             >
               {i + 1}
@@ -445,6 +404,48 @@ const SpecialtiesTab = ({
         onConfirm={handleDeleteSpecialty}
         itemType="Specialty"
       />
+
+      {isFilterModalOpen && (
+        <div className="filter-modal-overlay">
+          <div className="filter-modal-content">
+            <h3>Filter by {filterColumn}</h3>
+            <div className="filter-options-container">
+              {filterOptions.map((option) => (
+                <label key={option} className="filter-option-label">
+                  <input
+                    type="checkbox"
+                    checked={
+                      selectedFilters[filterColumn]?.includes(option) || false
+                    }
+                    onChange={() => handleFilterCheckboxChange(option)}
+                  />
+                  {option}
+                </label>
+              ))}
+            </div>
+            <div className="filter-modal-actions">
+              <button
+                className="clear-filters-btn"
+                onClick={() => {
+                  setSelectedFilters((prev) => ({
+                    ...prev,
+                    [filterColumn]: [],
+                  }));
+                  setIsFilterModalOpen(false);
+                }}
+              >
+                Clear
+              </button>
+              <button
+                className="close-modal-btn"
+                onClick={() => setIsFilterModalOpen(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

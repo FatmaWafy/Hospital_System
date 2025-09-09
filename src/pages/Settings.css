@@ -305,6 +305,7 @@
   font-weight: 600;
   color: #374151;
   text-transform: uppercase;
+  position: relative;
 }
 
 .specialties-table td {
