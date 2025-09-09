@@ -36,7 +36,7 @@ const Settings = () => {
     password: "*****",
   });
   const [specialties, setSpecialties] = useState(
-    Array.from({ length: 50 }).map((_, i) => ({
+    Array.from({ length: 10 }).map((_, i) => ({
       id: i + 1,
       name: `Specialty ${i + 1}`,
       addedBy: "Ahmed Safwat",

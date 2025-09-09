@@ -20,7 +20,7 @@ const Overview = () => {
   // Dummy data simulating DB response
   const statsData = {
     totalCases: 45,
-    arrestCases: 5,
+    deadCases: 5,
     totalDoctors: 50,
     onlineDoctors: 30,
   };
@@ -38,7 +38,7 @@ const Overview = () => {
   ];
 
   const responseTimeData = [
-    { name: "Early Response", value: 90.2, color: "#4285F4" },
+    { name: "On-time Response", value: 90.2, color: "#4285F4" },
     { name: "Late Response", value: 9.8, color: "#000000" },
   ];
 
@@ -117,8 +117,8 @@ const Overview = () => {
             <img src="/1.svg" alt="icon" className="stats-icon" />
           </div>
           <div className="stats-box">
-            <span className="box-label">Arrest Cases</span>
-            <span className="box-value">{statsData.arrestCases}</span>
+            <span className="box-label">Dead Cases</span>
+            <span className="box-value">{statsData.deadCases}</span>
             <img src="/2.svg" alt="icon" className="stats-icon" />
           </div>
           <div className="stats-box">

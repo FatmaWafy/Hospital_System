@@ -8,19 +8,6 @@ const Login = ({ setIsAuthenticated }) => {
   const navigate = useNavigate();
 
   const handleLogin = () => {
-       // Placeholder for future API integration
-    // const response = await fetch('/api/auth/login', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ email, password }),
-    // });
-    // const data = await response.json();
-    // if (data.token) {
-    //   localStorage.setItem('token', data.token);
-    //   navigate('/');
-    // } else {
-    //   alert('Login failed');
-    // } f
     if (email === "er_admin@codeclear" && password === "12345678") {
       localStorage.setItem("token", "fake-jwt-token-123");
       setIsAuthenticated(true);
@@ -40,11 +27,7 @@ const Login = ({ setIsAuthenticated }) => {
     <div className="login-overlay">
       <div className="login-box">
         <div className="login-header">
-          <div className="logo-container">
-            <div className="logo-circle">
-              <span className="logo-text">CC</span>
-            </div>
-          </div>
+          <img src="/logo2.svg" alt="Code Clear Logo" className="logo-image" />
           <h1 className="login-brand">Code Clear</h1>
           <h2 className="login-title">Welcome Back, ER Admin!</h2>
         </div>
