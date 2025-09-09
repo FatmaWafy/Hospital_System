@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
 
-const Login = () => {
+const Login = ({ setIsAuthenticated }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = () => {
-    // Placeholder for future API integration
+       // Placeholder for future API integration
     // const response = await fetch('/api/auth/login', {
     //   method: 'POST',
     //   headers: { 'Content-Type': 'application/json' },
@@ -20,14 +20,13 @@ const Login = () => {
     //   navigate('/');
     // } else {
     //   alert('Login failed');
-    // }
-    
-    // Temporary mock login for testing
-    if (email === "test@test.com" && password === "123456") {
+    // } f
+    if (email === "er_admin@codeclear" && password === "12345678") {
       localStorage.setItem("token", "fake-jwt-token-123");
+      setIsAuthenticated(true);
       navigate("/overview");
     } else {
-      alert("Invalid credentials! Try test@test.com / 123456");
+      alert("Invalid credentials! Use UN: er_admin@codeclear, PASS: 12345678");
     }
   };
 

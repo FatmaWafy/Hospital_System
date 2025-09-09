@@ -4,7 +4,7 @@ import "./Sidebar.css";
 const navItems = [
   {
     name: "Overview",
-    path: "/",
+    path: "/overview", // تغيير من "/" إلى "/overview"
     icon: "/overview.svg",
     activeIcon: "/overview-active.svg",
   },
@@ -26,15 +26,9 @@ const navItems = [
     icon: "/setting.svg",
     activeIcon: "/setting-active.svg",
   },
-  // {
-  //   name: "Help Center",
-  //   path: "/help",
-  //   icon: "/helpcenter.svg",
-  //   activeIcon: "/helpcenter-active.svg",
-  // },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ onLogout }) {
   return (
     <div className='sidebar'>
       <div className='sidebar-top'>
@@ -75,7 +69,7 @@ export default function Sidebar() {
 
       {/* User Info + Logout */}
       <div className='sidebar-user'>
-        <hr style={{height: '0.1px', width: '100%', border: 'none', backgroundColor: '#eeeeeebc'}}/>
+        <hr style={{ height: '0.1px', width: '100%', border: 'none', backgroundColor: '#eeeeeebc' }} />
         <div className='user-info'>
           <img src='/avatar.svg' alt='Profile' className='profile-pic-img' />
           <div className='user-details'>
@@ -83,7 +77,7 @@ export default function Sidebar() {
             <div className='user-email  '>a.safwat@gmail.com</div>
           </div>
         </div>
-        <button className='logout-button'>
+        <button className='logout-button' onClick={onLogout}>
           <img
             src='/logout.svg'
             alt='Logout Icon'
