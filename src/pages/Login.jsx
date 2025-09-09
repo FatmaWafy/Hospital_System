@@ -7,15 +7,27 @@ const Login = ({ setIsAuthenticated }) => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    if (email === "er_admin@codeclear" && password === "12345678") {
-      localStorage.setItem("token", "fake-jwt-token-123");
-      setIsAuthenticated(true);
-      navigate("/overview");
-    } else {
-      alert("Invalid credentials! Use UN: er_admin@codeclear, PASS: 12345678");
-    }
-  };
+ const handleLogin = () => {
+  if (email === "er_admin@codeclear" && password === "12345678") {
+    const fakeUser = {
+      name: "ER Admin",
+      jobTitle: "Emergency Manager",
+      email: "er_admin@codeclear",
+      phone: "0123456789",
+      photo: "/avatar.svg",
+      password: "12345678"
+    };
+
+    localStorage.setItem("token", "fake-jwt-token-123");
+    localStorage.setItem("userData", JSON.stringify(fakeUser));
+
+    setIsAuthenticated(true);
+    navigate("/overview");
+  } else {
+    alert("Invalid credentials! Use UN: er_admin@codeclear, PASS: 12345678");
+  }
+};
+
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {

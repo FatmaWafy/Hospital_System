@@ -27,14 +27,21 @@ const Settings = () => {
   const [notificationMessage, setNotificationMessage] = useState("");
   const [doctorCurrentPage, setDoctorCurrentPage] = useState(1);
   const doctorItemsPerPage = 10;
-  const [userData, setUserData] = useState({
-    name: "Ahmed Safwat Mohamed",
-    jobTitle: "Er Manager",
-    email: "i.asafwat@gmail.com",
-    phone: "0123456789",
-    photo: "/avatar.svg",
-    password: "*****",
-  });
+const storedUser = localStorage.getItem("userData");
+
+const [userData, setUserData] = useState(
+  storedUser
+    ? JSON.parse(storedUser)
+    : {
+        name: "Guest User",
+        jobTitle: "Not Assigned",
+        email: "guest@example.com",
+        phone: "0000000000",
+        photo: "/avatar.svg",
+        password: "*****",
+      }
+);
+
   const [specialties, setSpecialties] = useState(
     Array.from({ length: 10 }).map((_, i) => ({
       id: i + 1,
@@ -56,8 +63,10 @@ const Settings = () => {
   );
  
   const handleSave = () => {
+    
     console.log("Saving user data:", userData);
-    setIsEditing(false);
+  localStorage.setItem("userData", JSON.stringify(userData));
+  setIsEditing(false);
   };
 
   const handlePhotoChange = (event) => {
